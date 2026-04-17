@@ -1022,7 +1022,7 @@
       "category": "container",
       "space": "trunk",
       "conditions": {
-        "tent": "edoshell",
+        "tent": "both",
         "season": "all",
         "heater": null,
         "igt": null,
@@ -1030,23 +1030,7 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "708×434×384mm. 솔캠 메인 박스."
-    },
-    {
-      "id": "BOX002",
-      "name": "플라스틱 캠핑박스 55L",
-      "category": "container",
-      "space": "trunk",
-      "conditions": {
-        "tent": "stego",
-        "season": "all",
-        "heater": null,
-        "igt": null,
-        "people_min": 2,
-        "nights_min": 0
-      },
-      "required": true,
-      "notes": "뚜껑 제외 사용. 가족캠핑 메인 박스."
+      "notes": "708×434×384mm. 솔캠/가족캠 공통 메인 박스."
     },
     {
       "id": "BOX003",

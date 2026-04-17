@@ -18,7 +18,7 @@ const DEFAULT_INPUT = {
 export default function App() {
   const [input, setInput] = useState(DEFAULT_INPUT)
   const { data: items, isLoading, isError } = useItems()
-  const filteredItems = usePackingFilter(items)
+  const matchedIds = usePackingFilter(items, input)
 
   if (isLoading) return (
     <div className="min-h-screen bg-stone-100 flex items-center justify-center">
@@ -45,15 +45,15 @@ export default function App() {
         <InputPanel input={input} onChange={setInput} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-          <CarVisualizer items={filteredItems} input={input} />
-          <PackingResult items={filteredItems} input={input} />
+          <CarVisualizer items={items ?? []} matchedIds={matchedIds} input={input} />
+          <PackingResult items={items ?? []} matchedIds={matchedIds} />
           <RecipeResult input={input} />
         </div>
 
         <footer className="text-center text-xs text-stone-400 pb-4">
           총 {filteredItems.length}개 아이템 · {input.tent === 'edoshell' ? '에도쉘 솔캠' : '스테고 가족캠핑'} ·{' '}
           {input.season === 'spring_fall' ? '봄/가을' : '겨울'} ·{' '}
-          {input.nights === 0 ? '당일' : `${input.nights}박`} · {input.people}명
+          {input.nights === 0 ? '당일' : `${input.nights}박`} · {input.people}명 · 매칭 {matchedIds.size}개
         </footer>
       </main>
     </div>

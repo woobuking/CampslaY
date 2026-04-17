@@ -21,11 +21,11 @@ const SPACE_BADGE = {
   trunk_under: { label: '지하실', cls: 'bg-amber-100 text-amber-700' },
 }
 
-function ItemRow({ item, checked, onToggle }) {
+function ItemRow({ item, checked, onToggle, matched }) {
   const badge = SPACE_BADGE[item.storage_secondary]
   return (
     <li
-      className={`flex items-start gap-2 py-1.5 px-1 rounded cursor-pointer select-none hover:bg-stone-50 transition-colors ${checked ? 'opacity-50' : ''}`}
+      className={`flex items-start gap-2 py-1.5 px-1 rounded cursor-pointer select-none hover:bg-stone-50 transition-colors ${checked ? 'opacity-50' : !matched ? 'opacity-30' : ''}`}
       onClick={() => onToggle(item.id)}
     >
       <span className={`mt-0.5 w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center text-xs
@@ -33,7 +33,7 @@ function ItemRow({ item, checked, onToggle }) {
         {checked ? '✓' : ''}
       </span>
       <div className="flex-1 min-w-0">
-        <span className={`text-sm ${checked ? 'line-through' : 'text-stone-800'}`}>{item.name}</span>
+        <span className={`text-sm ${checked ? 'line-through' : matched ? 'text-stone-800 font-semibold' : 'text-stone-400'}`}>{item.name}</span>
         {!item.required && (
           <span className="ml-1.5 text-xs text-stone-400">(선택)</span>
         )}
@@ -48,10 +48,11 @@ function ItemRow({ item, checked, onToggle }) {
   )
 }
 
-function CategorySection({ category, items, checkedIds, onToggle }) {
+function CategorySection({ category, items, checkedIds, onToggle, matchedIds }) {
   const [collapsed, setCollapsed] = useState(false)
   const meta = CATEGORY_META[category] || { label: category, icon: '📋' }
   const doneCount = items.filter(i => checkedIds.has(i.id)).length
+  const matchedCount = items.filter(i => matchedIds.has(i.id)).length
 
   return (
     <div className="border border-stone-100 rounded-lg overflow-hidden">
@@ -61,7 +62,7 @@ function CategorySection({ category, items, checkedIds, onToggle }) {
       >
         <span className="text-base">{meta.icon}</span>
         <span className="font-semibold text-sm text-stone-700 flex-1">{meta.label}</span>
-        <span className="text-xs text-stone-400">{doneCount}/{items.length}</span>
+        <span className="text-xs text-stone-400">{doneCount}/{matchedCount}</span>
         <span className="text-stone-400 text-xs">{collapsed ? '▶' : '▼'}</span>
       </button>
       {!collapsed && (
@@ -72,6 +73,7 @@ function CategorySection({ category, items, checkedIds, onToggle }) {
               item={item}
               checked={checkedIds.has(item.id)}
               onToggle={onToggle}
+              matched={matchedIds.has(item.id)}
             />
           ))}
         </ul>
@@ -80,7 +82,7 @@ function CategorySection({ category, items, checkedIds, onToggle }) {
   )
 }
 
-export default function PackingResult({ items }) {
+export default function PackingResult({ items, matchedIds }) {
   const [checkedIds, setCheckedIds] = useState(new Set())
 
   const toggleItem = id => {
@@ -107,13 +109,14 @@ export default function PackingResult({ items }) {
   ]
 
   const totalDone = checkedIds.size
+  const totalMatched = matchedIds.size
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-4 shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-bold text-base text-stone-800">체크리스트</h2>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-stone-500">{totalDone}/{items.length} 완료</span>
+          <span className="text-xs text-stone-500">{totalDone}/{totalMatched} 완료</span>
           {totalDone > 0 && (
             <button onClick={resetAll} className="text-xs text-stone-400 hover:text-stone-600 underline">
               초기화
@@ -133,6 +136,7 @@ export default function PackingResult({ items }) {
               items={grouped[cat]}
               checkedIds={checkedIds}
               onToggle={toggleItem}
+              matchedIds={matchedIds}
             />
           ))}
         </div>
