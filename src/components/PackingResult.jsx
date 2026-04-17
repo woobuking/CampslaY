@@ -332,11 +332,6 @@ export default function PackingResult({
               체크 초기화
             </button>
           )}
-          {activeItems.length > 0 && (
-            <button onClick={onResetSelection} className="text-xs text-stone-400 hover:text-stone-600 underline">
-              목록 비우기
-            </button>
-          )}
           <button
             onClick={() => setShowContainerSelect(v => !v)}
             className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
