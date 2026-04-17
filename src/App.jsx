@@ -10,14 +10,17 @@ import PresetLoader from './components/PresetLoader'
 import { useItems } from './hooks/useItems'
 import { usePackingFilter } from './hooks/usePackingFilter'
 import { addItem, savePreset } from './lib/api'
+import { findPreset } from './lib/presets'
+
+const TENT_LABEL = { edoshell: '에도쉘 솔캠', stego: '스테고', dome_tarp: '돔+타프', dome_edoshell: '돔+에도쉘' }
+const SEASON_LABEL = { spring_fall: '봄/가을', summer: '여름', winter: '겨울' }
 
 const DEFAULT_INPUT = {
   tent: 'edoshell',
-  nights: 1,
+  nights: 0,
   season: 'spring_fall',
   heater: false,
   igt: 'none',
-  people: 1,
 }
 
 export default function App() {
@@ -123,9 +126,9 @@ export default function App() {
         </div>
 
         <footer className="text-center text-xs text-stone-400 pb-4">
-          총 {items.length}개 아이템 · {input.tent === 'edoshell' ? '에도쉘 솔캠' : '스테고 가족캠핑'} ·{' '}
-          {input.season === 'spring_fall' ? '봄/가을' : '겨울'} ·{' '}
-          {input.nights === 0 ? '당일' : `${input.nights}박`} · {input.people}명 · 매칭 {matchedIds.size}개
+          총 {items.length}개 아이템 · {findPreset(input)?.id ?? '커스텀'} ·{' '}
+          {TENT_LABEL[input.tent] ?? input.tent} · {SEASON_LABEL[input.season]} ·{' '}
+          {input.nights === 0 ? '당일' : '1박이상'} · 매칭 {matchedIds.size}개
         </footer>
       </main>
 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-const TENT_LABEL = { edoshell: '에도쉘 솔캠', stego: '스테고 가족캠', both: '공통' }
-const SEASON_LABEL = { spring_fall: '봄/가을', winter: '겨울', all: '전체' }
+const TENT_LABEL = { edoshell: '에도쉘 솔캠', stego: '스테고', dome_tarp: '돔+타프', dome_edoshell: '돔+에도쉘', both: '공통' }
+const SEASON_LABEL = { spring_fall: '봄/가을', summer: '여름', winter: '겨울', all: '전체' }
 const IGT_LABEL = { none: '없음', basic: 'Basic', full: 'Full', basic_full: 'Basic 이상' }
 
 export default function SavePresetModal({ input, checkedIds, onClose, onSave, isSaving }) {
@@ -42,10 +42,6 @@ export default function SavePresetModal({ input, checkedIds, onClose, onSave, is
             <div className="flex justify-between">
               <span className="text-stone-400">IGT</span>
               <span className="font-medium">{IGT_LABEL[input.igt] ?? input.igt}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-stone-400">인원</span>
-              <span className="font-medium">{input.people}명</span>
             </div>
             <div className="flex justify-between">
               <span className="text-stone-400">체크된 아이템</span>

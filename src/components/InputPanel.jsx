@@ -1,104 +1,70 @@
-const TENT_OPTIONS = [
-  { value: 'edoshell', label: '에도쉘', sub: '솔캠' },
-  { value: 'stego', label: '스테고', sub: '가족캠핑' },
-]
+import { PRESETS, findPreset } from '../lib/presets'
 
-const NIGHTS_OPTIONS = [
-  { value: 0, label: '당일' },
-  { value: 1, label: '1박' },
-  { value: 2, label: '2박' },
-]
-
-const SEASON_OPTIONS = [
-  { value: 'spring_fall', label: '봄/가을' },
-  { value: 'winter', label: '겨울' },
-]
-
-const IGT_OPTIONS = [
-  { value: 'none', label: 'IGT 없음' },
-  { value: 'basic', label: 'Basic', sub: '메인+탑' },
-  { value: 'full', label: 'Full', sub: '더블랙+언더쉘프' },
-]
-
-function ToggleGroup({ options, value, onChange, valueKey = 'value' }) {
-  return (
-    <div className="flex gap-1 flex-wrap">
-      {options.map(opt => (
-        <button
-          key={opt[valueKey]}
-          onClick={() => onChange(opt[valueKey])}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors
-            ${value === opt[valueKey]
-              ? 'bg-stone-800 text-white border-stone-800'
-              : 'bg-white text-stone-600 border-stone-300 hover:border-stone-500'
-            }`}
-        >
-          {opt.label}
-          {opt.sub && <span className="ml-1 text-xs opacity-70">({opt.sub})</span>}
-        </button>
-      ))}
-    </div>
-  )
+const TENT_LABEL = {
+  edoshell:      '에도쉘 솔캠',
+  stego:         '스테고',
+  dome_tarp:     '돔+타프',
+  dome_edoshell: '돔+에도쉘',
 }
 
-function InputRow({ label, children }) {
-  return (
-    <div className="flex items-center gap-3 flex-wrap">
-      <span className="text-sm font-semibold text-stone-600 w-16 shrink-0">{label}</span>
-      {children}
-    </div>
-  )
+const SEASON_LABEL = {
+  spring_fall: '봄/가을',
+  summer:      '여름',
+  winter:      '겨울',
+}
+
+const TENT_STYLE = {
+  edoshell:      { idle: 'bg-stone-50 border-stone-200 text-stone-700 hover:border-stone-400',       active: 'bg-stone-800 border-stone-800 text-white' },
+  stego:         { idle: 'bg-emerald-50 border-emerald-200 text-emerald-900 hover:border-emerald-400', active: 'bg-emerald-700 border-emerald-700 text-white' },
+  dome_tarp:     { idle: 'bg-sky-50 border-sky-200 text-sky-900 hover:border-sky-400',               active: 'bg-sky-600 border-sky-600 text-white' },
+  dome_edoshell: { idle: 'bg-violet-50 border-violet-200 text-violet-900 hover:border-violet-400',   active: 'bg-violet-700 border-violet-700 text-white' },
 }
 
 export default function InputPanel({ input, onChange }) {
-  const set = (key, val) => onChange(prev => ({ ...prev, [key]: val }))
+  const activePreset = findPreset(input)
+
+  const select = (preset) => {
+    onChange(() => ({
+      tent:   preset.tent,
+      season: preset.season,
+      nights: preset.nights,
+      heater: preset.heater,
+      igt:    preset.igt,
+    }))
+  }
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-4 shadow-sm">
-      <h2 className="font-bold text-base text-stone-800 mb-4">캠핑 조건 설정</h2>
-      <div className="space-y-3">
-        <InputRow label="텐트">
-          <ToggleGroup options={TENT_OPTIONS} value={input.tent} onChange={v => set('tent', v)} />
-        </InputRow>
-
-        <InputRow label="기간">
-          <ToggleGroup options={NIGHTS_OPTIONS} value={input.nights} onChange={v => set('nights', v)} />
-        </InputRow>
-
-        <InputRow label="계절">
-          <ToggleGroup options={SEASON_OPTIONS} value={input.season} onChange={v => set('season', v)} />
-        </InputRow>
-
-        <InputRow label="난로">
-          <button
-            onClick={() => set('heater', !input.heater)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors
-              ${input.heater
-                ? 'bg-orange-500 text-white border-orange-500'
-                : 'bg-white text-stone-600 border-stone-300 hover:border-stone-500'
-              }`}
-          >
-            {input.heater ? '난로 ON' : '난로 OFF'}
-          </button>
-        </InputRow>
-
-        <InputRow label="IGT">
-          <ToggleGroup options={IGT_OPTIONS} value={input.igt} onChange={v => set('igt', v)} />
-        </InputRow>
-
-        <InputRow label="인원">
-          <div className="flex items-center gap-2">
+      <h2 className="font-bold text-base text-stone-800 mb-3">캠핑 조건 설정</h2>
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+        {PRESETS.map(preset => {
+          const style = TENT_STYLE[preset.tent]
+          const isActive = activePreset?.id === preset.id
+          return (
             <button
-              onClick={() => set('people', Math.max(1, input.people - 1))}
-              className="w-8 h-8 rounded-full border border-stone-300 text-stone-600 hover:bg-stone-100 font-bold"
-            >−</button>
-            <span className="text-sm font-bold text-stone-800 w-8 text-center">{input.people}명</span>
-            <button
-              onClick={() => set('people', Math.min(6, input.people + 1))}
-              className="w-8 h-8 rounded-full border border-stone-300 text-stone-600 hover:bg-stone-100 font-bold"
-            >+</button>
-          </div>
-        </InputRow>
+              key={preset.id}
+              onClick={() => select(preset)}
+              className={`relative text-left rounded-lg border px-2.5 py-2 transition-colors
+                ${isActive ? style.active : style.idle}`}
+            >
+              <span className={`absolute top-1.5 right-1.5 text-[9px] font-bold ${isActive ? 'opacity-80' : 'opacity-40'}`}>
+                {preset.id}
+              </span>
+              <p className="text-xs font-bold leading-tight pr-6">{TENT_LABEL[preset.tent]}</p>
+              <p className={`text-[10px] mt-0.5 ${isActive ? 'opacity-80' : 'opacity-50'}`}>
+                {SEASON_LABEL[preset.season]} · {preset.nights === 0 ? '당일' : '1박'}
+              </p>
+              {preset.igt !== 'none' && (
+                <p className={`text-[10px] ${isActive ? 'opacity-80' : 'opacity-50'}`}>
+                  IGT {preset.igt === 'basic' ? 'Basic' : 'Full'}
+                </p>
+              )}
+              {preset.heater && (
+                <p className={`text-[10px] ${isActive ? 'opacity-80' : 'opacity-50'}`}>난로</p>
+              )}
+            </button>
+          )
+        })}
       </div>
     </div>
   )

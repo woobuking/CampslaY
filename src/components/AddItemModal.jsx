@@ -102,13 +102,16 @@ export default function AddItemModal({ onClose, onSubmit, isSubmitting, existing
                 <select className={input} value={form.tent} onChange={e => set('tent', e.target.value)}>
                   <option value="both">공통 (both)</option>
                   <option value="edoshell">에도쉘 솔캠</option>
-                  <option value="stego">스테고 가족캠</option>
+                  <option value="stego">스테고/돔 가족캠</option>
+                  <option value="dome_tarp">돔+타프</option>
+                  <option value="dome_edoshell">돔+에도쉘</option>
                 </select>
               </Field>
               <Field label="계절">
                 <select className={input} value={form.season} onChange={e => set('season', e.target.value)}>
                   <option value="all">전체 (all)</option>
                   <option value="spring_fall">봄/가을</option>
+                  <option value="summer">여름</option>
                   <option value="winter">겨울</option>
                 </select>
               </Field>
@@ -131,7 +134,6 @@ export default function AddItemModal({ onClose, onSubmit, isSubmitting, existing
                 <select className={input} value={form.nights_min} onChange={e => set('nights_min', e.target.value)}>
                   <option value="0">당일치기 이상</option>
                   <option value="1">1박 이상</option>
-                  <option value="2">2박 이상</option>
                 </select>
               </Field>
               <Field label="필수 여부">
