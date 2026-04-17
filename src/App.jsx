@@ -5,9 +5,11 @@ import CarVisualizer from './components/CarVisualizer'
 import PackingResult from './components/PackingResult'
 import RecipeResult from './components/RecipeResult'
 import AddItemModal from './components/AddItemModal'
+import SavePresetModal from './components/SavePresetModal'
+import PresetLoader from './components/PresetLoader'
 import { useItems } from './hooks/useItems'
 import { usePackingFilter } from './hooks/usePackingFilter'
-import { addItem } from './lib/api'
+import { addItem, savePreset } from './lib/api'
 
 const DEFAULT_INPUT = {
   tent: 'edoshell',
@@ -20,11 +22,25 @@ const DEFAULT_INPUT = {
 
 export default function App() {
   const [input, setInput] = useState(DEFAULT_INPUT)
+  const [checkedIds, setCheckedIds] = useState(new Set())
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showSaveModal, setShowSaveModal] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+
   const { data: items, isLoading, isError } = useItems()
   const matchedIds = usePackingFilter(items, input)
   const queryClient = useQueryClient()
+
+  const toggleItem = id => {
+    setCheckedIds(prev => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
+
+  const resetChecked = () => setCheckedIds(new Set())
 
   const handleAddItem = async (form) => {
     setIsSubmitting(true)
@@ -35,6 +51,22 @@ export default function App() {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleSavePreset = async (name) => {
+    setIsSaving(true)
+    try {
+      await savePreset(name, input, checkedIds)
+      setShowSaveModal(false)
+      await queryClient.invalidateQueries({ queryKey: ['presets'] })
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleLoadPreset = (preset) => {
+    setInput(preset.input)
+    setCheckedIds(new Set(preset.checked_ids))
   }
 
   if (isLoading) return (
@@ -55,14 +87,23 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-baseline gap-3">
             <h1 className="text-xl font-bold tracking-tight">CampslaY</h1>
-            <span className="text-stone-400 text-sm">Tesla Model Y 2025 Juniper 캠핑 패킹 어시스턴트</span>
+            <span className="text-stone-400 text-sm hidden sm:inline">Tesla Model Y 2025 Juniper 캠핑 패킹 어시스턴트</span>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="text-sm px-3 py-1.5 rounded-lg bg-stone-700 hover:bg-stone-600 text-white font-medium"
-          >
-            + 아이템 추가
-          </button>
+          <div className="flex items-center gap-2">
+            <PresetLoader onLoad={handleLoadPreset} />
+            <button
+              onClick={() => setShowSaveModal(true)}
+              className="text-sm px-3 py-1.5 rounded-lg bg-stone-700 hover:bg-stone-600 text-white font-medium"
+            >
+              조건 저장
+            </button>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="text-sm px-3 py-1.5 rounded-lg bg-stone-700 hover:bg-stone-600 text-white font-medium"
+            >
+              + 아이템
+            </button>
+          </div>
         </div>
       </header>
 
@@ -71,7 +112,13 @@ export default function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
           <CarVisualizer items={items ?? []} matchedIds={matchedIds} input={input} />
-          <PackingResult items={items ?? []} matchedIds={matchedIds} />
+          <PackingResult
+            items={items ?? []}
+            matchedIds={matchedIds}
+            checkedIds={checkedIds}
+            onToggle={toggleItem}
+            onReset={resetChecked}
+          />
           <RecipeResult input={input} />
         </div>
 
@@ -88,6 +135,16 @@ export default function App() {
           onSubmit={handleAddItem}
           isSubmitting={isSubmitting}
           existingItems={items ?? []}
+        />
+      )}
+
+      {showSaveModal && (
+        <SavePresetModal
+          input={input}
+          checkedIds={checkedIds}
+          onClose={() => setShowSaveModal(false)}
+          onSave={handleSavePreset}
+          isSaving={isSaving}
         />
       )}
     </div>

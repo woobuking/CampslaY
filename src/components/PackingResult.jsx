@@ -83,18 +83,9 @@ function CategorySection({ category, items, checkedIds, onToggle, matchedIds }) 
   )
 }
 
-export default function PackingResult({ items, matchedIds }) {
-  const [checkedIds, setCheckedIds] = useState(new Set())
-
-  const toggleItem = id => {
-    setCheckedIds(prev => {
-      const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
-      return next
-    })
-  }
-
-  const resetAll = () => setCheckedIds(new Set())
+export default function PackingResult({ items, matchedIds, checkedIds, onToggle, onReset }) {
+  const toggleItem = id => onToggle(id)
+  const resetAll = () => onReset()
 
   const grouped = items.reduce((acc, item) => {
     if (!acc[item.category]) acc[item.category] = []

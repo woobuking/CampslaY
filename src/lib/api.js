@@ -13,3 +13,23 @@ export async function addItem(item) {
   if (!res.ok) throw new Error('Failed to add item')
   return res.json()
 }
+
+export async function savePreset(name, input, checkedIds) {
+  const params = new URLSearchParams({
+    action: 'savePreset',
+    name,
+    ...input,
+    heater: String(input.heater),
+    checked_ids: JSON.stringify([...checkedIds]),
+  })
+  const res = await fetch(`${API_URL}?${params}`)
+  if (!res.ok) throw new Error('Failed to save preset')
+  return res.json()
+}
+
+export async function fetchPresets() {
+  const res = await fetch(`${API_URL}?action=getPresets`)
+  if (!res.ok) throw new Error('Failed to fetch presets')
+  const data = await res.json()
+  return data.presets
+}
