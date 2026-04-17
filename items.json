@@ -35,7 +35,7 @@
     {
       "id": "S001",
       "name": "에도쉘",
-      "category": "shelter",
+      "category": "tent",
       "conditions": {
         "season": "all",
         "heater": null,
@@ -55,7 +55,7 @@
     {
       "id": "S002",
       "name": "스테고 돔쉘터+이너텐트",
-      "category": "shelter",
+      "category": "tent",
       "conditions": {
         "season": "all",
         "heater": null,
@@ -76,7 +76,7 @@
     {
       "id": "S003",
       "name": "돔텐트+타프",
-      "category": "shelter",
+      "category": "tent",
       "conditions": {
         "season": "summer",
         "heater": null,
@@ -96,7 +96,7 @@
     {
       "id": "S004",
       "name": "돔텐트+에도쉘",
-      "category": "shelter",
+      "category": "tent",
       "conditions": {
         "season": "summer",
         "heater": null,
@@ -116,7 +116,7 @@
     {
       "id": "S006",
       "name": "스테고 루프 플라이",
-      "category": "shelter",
+      "category": "tent",
       "conditions": {
         "season": "spring_fall",
         "heater": null,
@@ -1123,7 +1123,7 @@
     },
     {
       "id": "HY001",
-      "name": "설거지 바스켓 (솔캠: 스픽 시에라+커틀러리)",
+      "name": "카고컨테이너 바스켓",
       "category": "hygiene",
       "conditions": {
         "season": "all",
@@ -1134,7 +1134,7 @@
       },
       "required": true,
       "purchase": false,
-      "notes": "",
+      "notes": "시에라 컵, 반합, 접시, 커틀러리",
       "storage_secondary": "trunk",
       "presets": [
         "P01",
@@ -1143,34 +1143,8 @@
       "storage_primary": "BOX001"
     },
     {
-      "id": "HY002",
-      "name": "설거지 바스켓 (가족: 스뎅 앞접시+커틀러리)",
-      "category": "hygiene",
-      "conditions": {
-        "season": "all",
-        "heater": null,
-        "igt": null,
-        "people_min": 2,
-        "nights_min": 0
-      },
-      "required": true,
-      "purchase": false,
-      "notes": "",
-      "storage_secondary": "trunk",
-      "presets": [
-        "P03",
-        "P04",
-        "P05",
-        "P06",
-        "P07",
-        "P08",
-        "P09"
-      ],
-      "storage_primary": "BOX001"
-    },
-    {
       "id": "HY003",
-      "name": "설거지 도구",
+      "name": "설거지 or 한장 수세미",
       "category": "hygiene",
       "conditions": {
         "season": "all",
@@ -1191,7 +1165,7 @@
     },
     {
       "id": "HY004",
-      "name": "설거지 확장 유닛",
+      "name": "카고컨테이너 사이드 행어",
       "category": "hygiene",
       "conditions": {
         "season": "spring_fall",
@@ -1211,62 +1185,8 @@
       "storage_primary": "BOX001"
     },
     {
-      "id": "HY005",
-      "name": "한장 수세미",
-      "category": "hygiene",
-      "conditions": {
-        "season": "all",
-        "heater": null,
-        "igt": null,
-        "people_min": 2,
-        "nights_min": 0
-      },
-      "required": true,
-      "purchase": false,
-      "notes": "",
-      "storage_secondary": "trunk",
-      "presets": [
-        "P03",
-        "P04",
-        "P05",
-        "P06",
-        "P07",
-        "P08",
-        "P09"
-      ],
-      "storage_primary": "BOX001"
-    },
-    {
       "id": "HY006",
-      "name": "키친타월",
-      "category": "hygiene",
-      "conditions": {
-        "season": "all",
-        "heater": null,
-        "igt": null,
-        "people_min": 1,
-        "nights_min": 0
-      },
-      "required": true,
-      "purchase": false,
-      "notes": "공통.",
-      "storage_secondary": "trunk",
-      "presets": [
-        "P01",
-        "P02",
-        "P03",
-        "P04",
-        "P05",
-        "P06",
-        "P07",
-        "P08",
-        "P09"
-      ],
-      "storage_primary": "BOX001"
-    },
-    {
-      "id": "HY007",
-      "name": "물티슈",
+      "name": "키친타월 & 물티슈",
       "category": "hygiene",
       "conditions": {
         "season": "all",
