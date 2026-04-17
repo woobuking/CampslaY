@@ -87,6 +87,7 @@ export default function App() {
           onClose={() => setShowAddModal(false)}
           onSubmit={handleAddItem}
           isSubmitting={isSubmitting}
+          existingItems={items ?? []}
         />
       )}
     </div>

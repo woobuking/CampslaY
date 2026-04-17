@@ -1,19 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-const DEFAULTS = {
-  id: '',
-  name: '',
-  category: 'cooking',
-  storage_secondary: 'trunk',
-  required: 'TRUE',
-  purchase: '',
-  notes: '',
-  tent: 'both',
-  season: 'all',
-  heater: '',
-  igt: '',
-  people_min: '1',
-  nights_min: '0',
+const CATEGORY_PREFIX = {
+  shelter:     'S',
+  lighting:    'L',
+  bedding:     'B',
+  furniture:   'F',
+  cooking:     'C',
+  fire:        'FR',
+  heating:     'H',
+  electronics: 'E',
+  electrical:  'E',
+  personal:    'P',
+  hygiene:     'HY',
+  container:   'BOX',
 }
 
 const CATEGORIES = [
@@ -21,15 +20,44 @@ const CATEGORIES = [
   'fire', 'heating', 'electronics', 'electrical', 'personal', 'hygiene', 'container',
 ]
 
-export default function AddItemModal({ onClose, onSubmit, isSubmitting }) {
+function generateId(category, existingItems) {
+  const prefix = CATEGORY_PREFIX[category] ?? category.toUpperCase().slice(0, 3)
+  const nums = existingItems
+    .map(i => i.id)
+    .filter(id => id.startsWith(prefix))
+    .map(id => parseInt(id.replace(prefix, ''), 10))
+    .filter(n => !isNaN(n))
+  const next = nums.length > 0 ? Math.max(...nums) + 1 : 1
+  return `${prefix}${String(next).padStart(3, '0')}`
+}
+
+const DEFAULTS = {
+  name: '',
+  category: 'cooking',
+  storage_secondary: 'trunk',
+  required: 'TRUE',
+  notes: '',
+  tent: 'both',
+  season: 'all',
+  heater: '',
+  igt: '',
+  nights_min: '0',
+}
+
+export default function AddItemModal({ onClose, onSubmit, isSubmitting, existingItems = [] }) {
   const [form, setForm] = useState(DEFAULTS)
+  const [autoId, setAutoId] = useState('')
+
+  useEffect(() => {
+    setAutoId(generateId(form.category, existingItems))
+  }, [form.category, existingItems])
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }))
 
   const handleSubmit = e => {
     e.preventDefault()
-    if (!form.id || !form.name) return
-    onSubmit(form)
+    if (!autoId || !form.name) return
+    onSubmit({ ...form, id: autoId, people_min: '1' })
   }
 
   return (
@@ -42,13 +70,12 @@ export default function AddItemModal({ onClose, onSubmit, isSubmitting }) {
 
         <form onSubmit={handleSubmit} className="px-5 py-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <Field label="ID *" required>
-              <input className={input} value={form.id} onChange={e => set('id', e.target.value)}
-                placeholder="예: C013" />
+            <Field label="ID (자동)">
+              <div className={`${input} bg-stone-50 text-stone-400`}>{autoId}</div>
             </Field>
-            <Field label="이름 *" required>
+            <Field label="이름 *">
               <input className={input} value={form.name} onChange={e => set('name', e.target.value)}
-                placeholder="아이템 이름" />
+                placeholder="아이템 이름" autoFocus />
             </Field>
           </div>
 
@@ -74,8 +101,8 @@ export default function AddItemModal({ onClose, onSubmit, isSubmitting }) {
               <Field label="텐트">
                 <select className={input} value={form.tent} onChange={e => set('tent', e.target.value)}>
                   <option value="both">공통 (both)</option>
-                  <option value="edoshell">에도쉘</option>
-                  <option value="stego">스테고</option>
+                  <option value="edoshell">에도쉘 솔캠</option>
+                  <option value="stego">스테고 가족캠</option>
                 </select>
               </Field>
               <Field label="계절">
@@ -87,43 +114,33 @@ export default function AddItemModal({ onClose, onSubmit, isSubmitting }) {
               </Field>
               <Field label="난로">
                 <select className={input} value={form.heater} onChange={e => set('heater', e.target.value)}>
-                  <option value="">무관 (null)</option>
-                  <option value="TRUE">필요 (true)</option>
+                  <option value="">무관</option>
+                  <option value="TRUE">필요</option>
                 </select>
               </Field>
               <Field label="IGT">
                 <select className={input} value={form.igt} onChange={e => set('igt', e.target.value)}>
-                  <option value="">무관 (null)</option>
+                  <option value="">무관</option>
                   <option value="none">없음</option>
                   <option value="basic">basic</option>
                   <option value="full">full</option>
                   <option value="basic_full">basic 이상</option>
                 </select>
               </Field>
-              <Field label="최소 인원">
-                <input type="number" className={input} min="1" value={form.people_min}
-                  onChange={e => set('people_min', e.target.value)} />
-              </Field>
               <Field label="최소 박수">
-                <input type="number" className={input} min="0" value={form.nights_min}
-                  onChange={e => set('nights_min', e.target.value)} />
+                <select className={input} value={form.nights_min} onChange={e => set('nights_min', e.target.value)}>
+                  <option value="0">당일치기 이상</option>
+                  <option value="1">1박 이상</option>
+                  <option value="2">2박 이상</option>
+                </select>
+              </Field>
+              <Field label="필수 여부">
+                <select className={input} value={form.required} onChange={e => set('required', e.target.value)}>
+                  <option value="TRUE">필수</option>
+                  <option value="">선택</option>
+                </select>
               </Field>
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="필수 여부">
-              <select className={input} value={form.required} onChange={e => set('required', e.target.value)}>
-                <option value="TRUE">필수</option>
-                <option value="">선택</option>
-              </select>
-            </Field>
-            <Field label="현장 구매">
-              <select className={input} value={form.purchase} onChange={e => set('purchase', e.target.value)}>
-                <option value="">아니오</option>
-                <option value="TRUE">예</option>
-              </select>
-            </Field>
           </div>
 
           <Field label="메모">
@@ -136,7 +153,7 @@ export default function AddItemModal({ onClose, onSubmit, isSubmitting }) {
               className="flex-1 py-2 rounded-lg border border-stone-200 text-sm text-stone-600 hover:bg-stone-50">
               취소
             </button>
-            <button type="submit" disabled={isSubmitting || !form.id || !form.name}
+            <button type="submit" disabled={isSubmitting || !form.name}
               className="flex-1 py-2 rounded-lg bg-stone-800 text-white text-sm font-semibold hover:bg-stone-700 disabled:opacity-40">
               {isSubmitting ? '저장 중...' : '저장'}
             </button>
