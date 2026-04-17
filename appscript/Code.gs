@@ -26,6 +26,7 @@ function getOrCreateItemsSheet() {
 }
 
 function ensureItemsSheetHeaders(sheet) {
+  if (!sheet) sheet = getOrCreateItemsSheet()
   const current = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn() || 1, ITEM_HEADERS.length)).getValues()[0]
   const currentHeaders = current.filter(Boolean)
   if (currentHeaders.join('|') !== ITEM_HEADERS.join('|')) {
@@ -39,7 +40,8 @@ function ensureItemsSheetHeaders(sheet) {
 }
 
 function ensurePresetsSheetHeaders(sheet) {
-  const current = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), PRESET_HEADERS.length)).getValues()[0]
+  if (!sheet) sheet = getOrCreatePresetsSheet()
+  const current = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn() || 1, PRESET_HEADERS.length)).getValues()[0]
   const currentHeaders = current.filter(Boolean)
   if (currentHeaders.length === 0) {
     sheet.getRange(1, 1, 1, PRESET_HEADERS.length).setValues([PRESET_HEADERS])
