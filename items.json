@@ -56,18 +56,19 @@
       "name": "스테고 돔쉘터+이너텐트",
       "category": "shelter",
       "conditions": {
-        "season": "spring_fall",
+        "season": "all",
         "heater": null,
         "igt": null,
         "people_min": 2,
         "nights_min": 1
       },
       "required": true,
-      "notes": "스테고 봄가을용 돔쉘터+이너텐트 세트. 프렁크 적재.",
+      "notes": "스테고 돔쉘터+이너텐트 세트. 프렁크 적재.",
       "storage_secondary": "frunk",
       "presets": [
         "P03",
-        "P04"
+        "P04",
+        "P05"
       ]
     },
     {
@@ -106,24 +107,6 @@
       "presets": [
         "P08",
         "P09"
-      ]
-    },
-    {
-      "id": "S005",
-      "name": "스테고 돔쉘터+이너텐트",
-      "category": "shelter",
-      "conditions": {
-        "season": "winter",
-        "heater": null,
-        "igt": null,
-        "people_min": 2,
-        "nights_min": 1
-      },
-      "required": true,
-      "notes": "스테고 겨울용 돔쉘터+이너텐트 세트. 프렁크 적재.",
-      "storage_secondary": "frunk",
-      "presets": [
-        "P05"
       ]
     },
     {
