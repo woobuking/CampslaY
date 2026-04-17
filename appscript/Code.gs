@@ -1,6 +1,12 @@
 const SHEET_NAME = 'items'
 
-function doGet() {
+function doGet(e) {
+  const action = e && e.parameter && e.parameter.action
+
+  if (action === 'addItem') {
+    return handleAddItem(e.parameter)
+  }
+
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
   const data = sheet.getDataRange().getValues()
   const headers = data[0]
@@ -34,6 +40,28 @@ function doGet() {
   return ContentService
     .createTextOutput(JSON.stringify({ items }))
     .setMimeType(ContentService.MimeType.JSON)
+}
+
+function handleAddItem(params) {
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
+
+    const newRow = headers.map(h => {
+      if (params[h] !== undefined) return params[h]
+      return ''
+    })
+
+    sheet.appendRow(newRow)
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true }))
+      .setMimeType(ContentService.MimeType.JSON)
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON)
+  }
 }
 
 function doPost(e) {

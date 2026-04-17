@@ -6,3 +6,10 @@ export async function fetchItems() {
   const data = await res.json()
   return data.items
 }
+
+export async function addItem(item) {
+  const params = new URLSearchParams({ action: 'addItem', ...item })
+  const res = await fetch(`${API_URL}?${params}`)
+  if (!res.ok) throw new Error('Failed to add item')
+  return res.json()
+}
