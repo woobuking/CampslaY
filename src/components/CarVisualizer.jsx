@@ -1,82 +1,113 @@
+import modelYImg from '../assets/model_y.png'
+
 const ZONE_CONFIG = {
   frunk: {
     label: '프렁크',
-    sub: 'FRUNK',
     color: { bg: '#dbeafe', border: '#3b82f6', text: '#1e40af', count: '#3b82f6' },
     empty: { bg: '#f8fafc', border: '#e2e8f0', text: '#94a3b8', count: '#cbd5e1' },
   },
   trunk: {
     label: '트렁크',
-    sub: 'TRUNK',
     color: { bg: '#dcfce7', border: '#22c55e', text: '#15803d', count: '#16a34a' },
     empty: { bg: '#f8fafc', border: '#e2e8f0', text: '#94a3b8', count: '#cbd5e1' },
   },
   trunk_under: {
     label: '지하실',
-    sub: 'UNDER',
     color: { bg: '#fef3c7', border: '#f59e0b', text: '#b45309', count: '#d97706' },
-    empty: { bg: '#f3f4f6', border: '#e5e7eb', text: '#9ca3af', count: '#d1d5db' },
+    empty: { bg: '#f8fafc', border: '#e2e8f0', text: '#94a3b8', count: '#cbd5e1' },
     disabled: { bg: '#f3f4f6', border: '#e5e7eb', text: '#9ca3af', count: '#9ca3af' },
   },
 }
 
-function ZoneSvgRect({ zoneKey, items, packedIds, x, y, width, height, rx, disabled, label }) {
-  const cfg = ZONE_CONFIG[zoneKey]
-  const theme = disabled ? cfg.disabled : items.length > 0 ? cfg.color : cfg.empty
-  const doneCount = items.filter(item => packedIds.has(item.id)).length
+const PROGRESS_COLORS = {
+  0:   '#e2e8f0',
+  25:  '#93c5fd',
+  50:  '#60a5fa',
+  75:  '#3b82f6',
+  100: '#1d4ed8',
+}
 
-  const maxVisible = Math.floor((height - 40) / 16)
-  const visible = items.slice(0, maxVisible)
-  const overflow = items.length - maxVisible
+function progressColor(pct) {
+  if (pct >= 100) return PROGRESS_COLORS[100]
+  if (pct >= 75)  return PROGRESS_COLORS[75]
+  if (pct >= 50)  return PROGRESS_COLORS[50]
+  if (pct >= 25)  return PROGRESS_COLORS[25]
+  return PROGRESS_COLORS[0]
+}
+
+function ProgressRing({ done, total, size = 72 }) {
+  const pct = total === 0 ? 0 : Math.round((done / total) * 100)
+  const r = (size - 10) / 2
+  const circ = 2 * Math.PI * r
+  const dash = (pct / 100) * circ
+  const color = progressColor(pct)
 
   return (
-    <g>
-      <rect x={x} y={y} width={width} height={height} rx={rx}
-        fill={theme.bg} stroke={theme.border} strokeWidth="1.5" />
-      <text x={x + width / 2} y={y + 16} textAnchor="middle" fontSize="10" fontWeight="700" fill={theme.text}>
-        {label}
-      </text>
-      <text x={x + width / 2} y={y + 28} textAnchor="middle" fontSize="8" fill={theme.count}>
-        {disabled ? '무박 시 미사용' : doneCount > 0 ? `${doneCount}/${items.length} 완료` : `${items.length}개`}
-      </text>
-      {!disabled && visible.map((item, i) => {
-        const checked = packedIds.has(item.id)
-        const textY = y + 44 + i * 15
-        const itemLabel = item.name.length > 14 ? item.name.slice(0, 14) + '…' : item.name
-
-        return (
-          <g key={item.id} opacity={checked ? 0.58 : 1}>
-            <text
-              x={x + 6}
-              y={textY}
-              fontSize="8.5"
-              fontWeight={checked ? '700' : '400'}
-              fill={checked ? '#475569' : theme.text}
-              textDecoration={checked ? 'line-through' : 'none'}
-              style={{ overflow: 'hidden' }}
-            >
-              {checked ? '✓' : '·'} {itemLabel}
-            </text>
-            {checked && (
-              <line
-                x1={x + 6}
-                x2={x + width - 8}
-                y1={textY - 3}
-                y2={textY - 3}
-                stroke="#475569"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-              />
-            )}
-          </g>
-        )
-      })}
-      {!disabled && overflow > 0 && (
-        <text x={x + width / 2} y={y + height - 6} textAnchor="middle" fontSize="8" fill={theme.count}>
-          +{overflow}개 더
+    <div className="flex flex-col items-center justify-center">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#e2e8f0" strokeWidth="7" />
+        <circle
+          cx={size/2} cy={size/2} r={r}
+          fill="none"
+          stroke={color}
+          strokeWidth="7"
+          strokeLinecap="round"
+          strokeDasharray={`${dash} ${circ}`}
+          transform={`rotate(-90 ${size/2} ${size/2})`}
+          style={{ transition: 'stroke-dasharray 0.4s ease' }}
+        />
+        <text x={size/2} y={size/2 + 1} textAnchor="middle" dominantBaseline="middle"
+          fontSize="15" fontWeight="700" fill="#1e293b">
+          {pct}%
         </text>
+      </svg>
+      <p className="text-[10px] text-stone-400 mt-0.5">{done}/{total} 완료</p>
+    </div>
+  )
+}
+
+function ZoneBar({ zoneKey, items, packedIds, disabled }) {
+  const cfg = ZONE_CONFIG[zoneKey]
+  const theme = disabled ? cfg.disabled : items.length > 0 ? cfg.color : cfg.empty
+  const done = items.filter(item => packedIds.has(item.id)).length
+  const pct = items.length === 0 ? 0 : Math.round((done / items.length) * 100)
+
+  return (
+    <div className="rounded-lg border px-3 py-2" style={{ background: theme.bg, borderColor: theme.border }}>
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-xs font-bold" style={{ color: theme.text }}>{cfg.label}</span>
+        <span className="text-[10px]" style={{ color: theme.count }}>
+          {disabled ? '무박 미사용' : `${done}/${items.length}`}
+        </span>
+      </div>
+      {!disabled && items.length > 0 && (
+        <>
+          <div className="w-full h-1.5 rounded-full bg-white/60 overflow-hidden mb-1.5">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${pct}%`, background: theme.border }}
+            />
+          </div>
+          <div className="flex flex-wrap gap-x-2 gap-y-0.5">
+            {items.map(item => {
+              const checked = packedIds.has(item.id)
+              return (
+                <span
+                  key={item.id}
+                  className={`text-[10px] ${checked ? 'line-through opacity-40' : ''}`}
+                  style={{ color: theme.text }}
+                >
+                  {checked ? '✓' : '·'} {item.name.length > 12 ? item.name.slice(0, 12) + '…' : item.name}
+                </span>
+              )
+            })}
+          </div>
+        </>
       )}
-    </g>
+      {!disabled && items.length === 0 && (
+        <p className="text-[10px]" style={{ color: theme.count }}>아이템 없음</p>
+      )}
+    </div>
   )
 }
 
@@ -87,66 +118,31 @@ export default function CarVisualizer({ items, selectedIds = new Set(), packedId
   const trunkUnder = selected.filter(i => i.storage_secondary === 'trunk_under')
   const underDisabled = input.nights === 0
 
-  const frunkH = Math.max(80, 44 + frunk.length * 15)
-  const trunkH = Math.max(100, 44 + trunk.length * 15)
-  const underH = 56
-  const gap = 8
-  const svgW = 280
-  const zoneX = 30
-  const zoneW = svgW - 60
-  const wheelW = 16, wheelH = 44, wheelRx = 5
-
-  const frunkY = 16
-  const trunkY = frunkY + frunkH + gap
-  const underY = trunkY + trunkH + gap
-  const svgH = underY + underH + 16
+  const totalItems = selected.length
+  const doneItems = selected.filter(i => packedIds.has(i.id)).length
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-4 shadow-sm">
-      <h2 className="font-bold text-base text-stone-800 mb-3">적재 도식 — Model Y Juniper</h2>
+    <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+      {/* Car image */}
+      <div className="relative bg-gradient-to-b from-stone-100 to-white px-4 pt-4 pb-2">
+        <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-1">Tesla Model Y Juniper</p>
+        <img src={modelYImg} alt="Model Y" className="w-full max-h-36 object-contain" />
+      </div>
 
-      <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full" style={{ maxHeight: 480 }}>
-        {/* Car body */}
-        <rect x="14" y="8" width={svgW - 28} height={svgH - 16} rx="28"
-          fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="1.5" />
+      {/* Progress ring + title */}
+      <div className="flex items-center justify-between px-4 py-3 border-t border-stone-100">
+        <div>
+          <h2 className="font-bold text-base text-stone-800">적재 현황</h2>
+          <p className="text-xs text-stone-400 mt-0.5">활성 {totalItems}개 아이템</p>
+        </div>
+        <ProgressRing done={doneItems} total={totalItems} size={68} />
+      </div>
 
-        {/* Front label */}
-        <text x={svgW / 2} y="10" textAnchor="middle" fontSize="8" fill="#94a3b8">▲ 앞 (Front)</text>
-
-        {/* Front wheels */}
-        <rect x="0" y={frunkY + frunkH / 2 - wheelH / 2} width={wheelW} height={wheelH} rx={wheelRx} fill="#475569" />
-        <rect x={svgW - wheelW} y={frunkY + frunkH / 2 - wheelH / 2} width={wheelW} height={wheelH} rx={wheelRx} fill="#475569" />
-
-        {/* Frunk zone */}
-        <ZoneSvgRect zoneKey="frunk" items={frunk} packedIds={packedIds}
-          x={zoneX} y={frunkY} width={zoneW} height={frunkH} rx={16}
-          label="프렁크" />
-
-        {/* Rear wheels */}
-        <rect x="0" y={trunkY + trunkH / 2 - wheelH / 2} width={wheelW} height={wheelH} rx={wheelRx} fill="#475569" />
-        <rect x={svgW - wheelW} y={trunkY + trunkH / 2 - wheelH / 2} width={wheelW} height={wheelH} rx={wheelRx} fill="#475569" />
-
-        {/* Trunk zone */}
-        <ZoneSvgRect zoneKey="trunk" items={trunk} packedIds={packedIds}
-          x={zoneX} y={trunkY} width={zoneW} height={trunkH} rx={10}
-          label="트렁크" />
-
-        {/* Trunk under zone */}
-        <ZoneSvgRect zoneKey="trunk_under" items={trunkUnder} packedIds={packedIds}
-          x={zoneX} y={underY} width={zoneW} height={underH} rx={8}
-          label="지하실" disabled={underDisabled} />
-
-        {/* Back label */}
-        <text x={svgW / 2} y={svgH - 2} textAnchor="middle" fontSize="8" fill="#94a3b8">▼ 뒤 (Back)</text>
-      </svg>
-
-      <div className="mt-3 flex gap-3 text-xs text-stone-500 flex-wrap">
-        <span><span className="inline-block w-3 h-3 rounded bg-blue-200 mr-1"></span>프렁크 {frunk.filter(item => packedIds.has(item.id)).length}/{frunk.length}</span>
-        <span><span className="inline-block w-3 h-3 rounded bg-green-200 mr-1"></span>트렁크 {trunk.filter(item => packedIds.has(item.id)).length}/{trunk.length}</span>
-        <span className={underDisabled ? 'opacity-40' : ''}>
-          <span className="inline-block w-3 h-3 rounded bg-amber-200 mr-1"></span>
-          지하실 {underDisabled ? '미사용' : `${trunkUnder.filter(item => packedIds.has(item.id)).length}/${trunkUnder.length}`}
-        </span>
+      {/* Zone bars */}
+      <div className="px-4 pb-4 space-y-2">
+        <ZoneBar zoneKey="frunk" items={frunk} packedIds={packedIds} />
+        <ZoneBar zoneKey="trunk" items={trunk} packedIds={packedIds} />
+        <ZoneBar zoneKey="trunk_under" items={trunkUnder} packedIds={packedIds} disabled={underDisabled} />
       </div>
     </div>
   )
