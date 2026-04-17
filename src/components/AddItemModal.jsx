@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
+import { PRESETS } from '../lib/presets'
 
 const CATEGORY_PREFIX = {
   shelter:     'S',
@@ -20,6 +21,19 @@ const CATEGORIES = [
   'fire', 'heating', 'electronics', 'electrical', 'personal', 'hygiene', 'container',
 ]
 
+const TENT_LABEL = {
+  edoshell: '에도쉘 솔캠',
+  stego: '스테고',
+  dome_tarp: '돔+타프',
+  dome_edoshell: '돔+에도쉘',
+}
+
+const SEASON_LABEL = {
+  spring_fall: '봄/가을',
+  summer: '여름',
+  winter: '겨울',
+}
+
 function generateId(category, existingItems) {
   const prefix = CATEGORY_PREFIX[category] ?? category.toUpperCase().slice(0, 3)
   const nums = existingItems
@@ -34,10 +48,11 @@ function generateId(category, existingItems) {
 const DEFAULTS = {
   name: '',
   category: 'cooking',
+  storage_primary: '',
   storage_secondary: 'trunk',
   required: 'TRUE',
   notes: '',
-  tent: 'both',
+  presets: [],
   season: 'all',
   heater: '',
   igt: '',
@@ -46,18 +61,29 @@ const DEFAULTS = {
 
 export default function AddItemModal({ onClose, onSubmit, isSubmitting, existingItems = [] }) {
   const [form, setForm] = useState(DEFAULTS)
-  const [autoId, setAutoId] = useState('')
-
-  useEffect(() => {
-    setAutoId(generateId(form.category, existingItems))
-  }, [form.category, existingItems])
+  const containerOptions = useMemo(
+    () => existingItems.filter(item => item.category === 'container'),
+    [existingItems],
+  )
+  const autoId = useMemo(
+    () => generateId(form.category, existingItems),
+    [form.category, existingItems],
+  )
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }))
+  const togglePreset = presetId => {
+    setForm(prev => ({
+      ...prev,
+      presets: prev.presets.includes(presetId)
+        ? prev.presets.filter(id => id !== presetId)
+        : [...prev.presets, presetId],
+    }))
+  }
 
   const handleSubmit = e => {
     e.preventDefault()
-    if (!autoId || !form.name) return
-    onSubmit({ ...form, id: autoId, people_min: '1' })
+    if (!autoId || !form.name || form.presets.length === 0) return
+    onSubmit({ ...form, id: autoId, presets: JSON.stringify(form.presets), people_min: '1' })
   }
 
   return (
@@ -90,23 +116,44 @@ export default function AddItemModal({ onClose, onSubmit, isSubmitting, existing
                 <option value="frunk">프렁크</option>
                 <option value="trunk">트렁크</option>
                 <option value="trunk_under">지하실</option>
-                <option value="cabin">뒷좌석</option>
               </select>
             </Field>
           </div>
 
+          <Field label="담는 컨테이너">
+            <select className={input} value={form.storage_primary} onChange={e => set('storage_primary', e.target.value)}>
+              <option value="">컨테이너 미지정</option>
+              {containerOptions.map(item => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+
           <div className="border-t border-stone-100 pt-3">
             <p className="text-xs font-semibold text-stone-500 mb-2">조건</p>
+            <Field label="포함 프리셋 *">
+              <div className="grid grid-cols-3 gap-1.5 mb-3">
+                {PRESETS.map(preset => {
+                  const selected = form.presets.includes(preset.id)
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => togglePreset(preset.id)}
+                      className={`rounded-lg border px-2 py-1.5 text-left text-[11px] transition-colors
+                        ${selected ? 'border-stone-800 bg-stone-800 text-white' : 'border-stone-200 bg-white text-stone-600 hover:border-stone-400'}`}
+                    >
+                      <span className="font-bold">{preset.id}</span>
+                      <span className="ml-1">{preset.label ?? TENT_LABEL[preset.tent]}</span>
+                      <span className="block opacity-70">{SEASON_LABEL[preset.season]} · {preset.nights === 0 ? '당일' : '1박'}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </Field>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="텐트">
-                <select className={input} value={form.tent} onChange={e => set('tent', e.target.value)}>
-                  <option value="both">공통 (both)</option>
-                  <option value="edoshell">에도쉘 솔캠</option>
-                  <option value="stego">스테고/돔 가족캠</option>
-                  <option value="dome_tarp">돔+타프</option>
-                  <option value="dome_edoshell">돔+에도쉘</option>
-                </select>
-              </Field>
               <Field label="계절">
                 <select className={input} value={form.season} onChange={e => set('season', e.target.value)}>
                   <option value="all">전체 (all)</option>
@@ -155,7 +202,7 @@ export default function AddItemModal({ onClose, onSubmit, isSubmitting, existing
               className="flex-1 py-2 rounded-lg border border-stone-200 text-sm text-stone-600 hover:bg-stone-50">
               취소
             </button>
-            <button type="submit" disabled={isSubmitting || !form.name}
+            <button type="submit" disabled={isSubmitting || !form.name || form.presets.length === 0}
               className="flex-1 py-2 rounded-lg bg-stone-800 text-white text-sm font-semibold hover:bg-stone-700 disabled:opacity-40">
               {isSubmitting ? '저장 중...' : '저장'}
             </button>

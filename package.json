@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "export:csv": "node scripts/export-items-csv.js",
     "upload": "node scripts/upload.js"
   },
   "dependencies": {

@@ -1,4 +1,13 @@
-import itemsData from '../data/items.json'
+import { getFoodPreset } from '../data/foodPresets'
+import { getDefaultPeople } from '../lib/presets'
+
+const SUMMER_FAMILY_RECIPES = [
+  { name: '냉모밀 + 유부초밥', desc: '더운 날 먹기 편한 한 끼. 최소 조리로 바로 완성.' },
+  { name: '차돌 비빔국수', desc: '차돌박이만 빠르게 굽고 비빔국수에 얹기 좋음.' },
+  { name: '오꼬노미야끼', desc: '그리들 한 판 요리로 아이들까지 같이 먹기 좋음.' },
+  { name: '대패삼겹 숙주볶음', desc: '대패삼겹과 숙주를 센 불에 빠르게 볶는 여름 메뉴.' },
+  { name: '새우 버터구이', desc: '버터와 마늘만 챙기면 짧게 조리해도 만족감이 큼.' },
+]
 
 const RECIPES = {
   edoshell: {
@@ -33,24 +42,32 @@ const RECIPES = {
       { name: '핫초코 & 컵라면', desc: '야간 야식. 커피포트로 물 끓여 즉석 완성.' },
     ],
   },
+  dome_tarp: {
+    summer: SUMMER_FAMILY_RECIPES,
+  },
+  dome_edoshell: {
+    summer: SUMMER_FAMILY_RECIPES,
+  },
 }
 
 function FoodPresetSection({ input }) {
-  const preset = input.tent === 'edoshell'
-    ? itemsData.food_presets?.edoshell_solo
-    : itemsData.food_presets?.stego_family
+  const preset = getFoodPreset(input.tent)
+  const people = input.people ?? getDefaultPeople(input.tent)
 
   if (!preset) return null
 
   const items = [...preset.base]
+  const isSolo = input.tent === 'edoshell'
 
   if (input.nights > 0) {
-    const perNight = input.tent === 'edoshell' ? preset.per_night : preset.per_night_per_person
+    const perNight = isSolo ? preset.per_night : preset.per_night_per_person
     if (perNight) {
       Object.entries(perNight).forEach(([key, val]) => {
-        const qty = input.tent === 'stego'
-          ? `${typeof val === 'number' ? val * input.nights * input.people : val}`
-          : `${typeof val === 'number' ? val * input.nights : val}`
+        const qty = typeof val === 'number'
+          ? isSolo
+            ? `${val * input.nights}`
+            : `${val * input.nights * people}`
+          : `${val}`
         items.push(`${key} ${qty}${typeof val === 'number' ? '개/팩' : ''}`)
       })
     }
@@ -79,17 +96,23 @@ export default function RecipeResult({ input }) {
     <div className="bg-white rounded-xl border border-stone-200 p-4 shadow-sm">
       <h2 className="font-bold text-base text-stone-800 mb-3">요리 추천</h2>
 
-      <div className="space-y-2">
-        {recipes.map((recipe, i) => (
-          <div key={i} className="border border-stone-100 rounded-lg px-3 py-2.5">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-stone-400 w-4">{i + 1}</span>
-              <span className="font-semibold text-sm text-stone-800">{recipe.name}</span>
+      {recipes.length === 0 ? (
+        <p className="rounded-lg border border-dashed border-stone-200 px-3 py-4 text-sm text-stone-400">
+          해당 조건용 요리 추천을 준비 중입니다.
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {recipes.map((recipe, i) => (
+            <div key={i} className="border border-stone-100 rounded-lg px-3 py-2.5">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-stone-400 w-4">{i + 1}</span>
+                <span className="font-semibold text-sm text-stone-800">{recipe.name}</span>
+              </div>
+              <p className="text-xs text-stone-500 mt-1 ml-6 leading-relaxed">{recipe.desc}</p>
             </div>
-            <p className="text-xs text-stone-500 mt-1 ml-6 leading-relaxed">{recipe.desc}</p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       <FoodPresetSection input={input} />
     </div>

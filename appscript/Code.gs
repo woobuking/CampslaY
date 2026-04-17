@@ -1,13 +1,86 @@
 const SHEET_NAME = 'items'
 const PRESETS_SHEET_NAME = 'presets'
+const ITEM_HEADERS = [
+  'id',
+  'name',
+  'category',
+  'storage_primary',
+  'storage_secondary',
+  'required',
+  'purchase',
+  'notes',
+  'presets',
+  'season',
+  'heater',
+  'igt',
+  'people_min',
+  'nights_min',
+]
+const PRESET_HEADERS = ['name', 'created_at', 'tent', 'nights', 'season', 'heater', 'igt', 'people', 'checked_ids']
+
+function ensureItemsSheetHeaders(sheet) {
+  const current = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), ITEM_HEADERS.length)).getValues()[0]
+  const currentHeaders = current.filter(Boolean)
+  if (currentHeaders.join('|') !== ITEM_HEADERS.join('|')) {
+    sheet.getRange(1, 1, 1, ITEM_HEADERS.length).setValues([ITEM_HEADERS])
+    const extraColumns = sheet.getLastColumn() - ITEM_HEADERS.length
+    if (extraColumns > 0) {
+      sheet.getRange(1, ITEM_HEADERS.length + 1, sheet.getMaxRows(), extraColumns).clearContent()
+    }
+  }
+  return ITEM_HEADERS
+}
+
+function ensurePresetsSheetHeaders(sheet) {
+  const current = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), PRESET_HEADERS.length)).getValues()[0]
+  const currentHeaders = current.filter(Boolean)
+  if (currentHeaders.length === 0) {
+    sheet.getRange(1, 1, 1, PRESET_HEADERS.length).setValues([PRESET_HEADERS])
+    return PRESET_HEADERS
+  }
+
+  const headers = currentHeaders.slice()
+  PRESET_HEADERS.forEach(header => {
+    if (headers.indexOf(header) === -1) {
+      headers.push(header)
+      sheet.getRange(1, headers.length).setValue(header)
+    }
+  })
+  return headers
+}
+
+function parsePresets(value) {
+  if (!value) return []
+  if (Array.isArray(value)) return value
+  try {
+    const parsed = JSON.parse(value)
+    return Array.isArray(parsed) ? parsed : []
+  } catch (err) {
+    return String(value)
+      .split(',')
+      .map(v => v.trim())
+      .filter(Boolean)
+  }
+}
+
+function parseJsonArray(value) {
+  if (!value) return []
+  if (Array.isArray(value)) return value
+  try {
+    const parsed = JSON.parse(value)
+    return Array.isArray(parsed) ? parsed : []
+  } catch (err) {
+    return []
+  }
+}
 
 function getOrCreatePresetsSheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet()
   let sheet = ss.getSheetByName(PRESETS_SHEET_NAME)
   if (!sheet) {
     sheet = ss.insertSheet(PRESETS_SHEET_NAME)
-    sheet.appendRow(['name', 'created_at', 'tent', 'nights', 'season', 'heater', 'igt', 'people', 'checked_ids'])
   }
+  ensurePresetsSheetHeaders(sheet)
   return sheet
 }
 
@@ -15,19 +88,21 @@ function doGet(e) {
   const action = e && e.parameter && e.parameter.action
 
   if (action === 'addItem')    return handleAddItem(e.parameter)
+  if (action === 'updateItemContainer') return handleUpdateItemContainer(e.parameter)
   if (action === 'savePreset') return handleSavePreset(e.parameter)
   if (action === 'getPresets') return handleGetPresets()
 
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
   const data = sheet.getDataRange().getValues()
   const headers = data[0]
+  const hasPresetColumn = headers.indexOf('presets') !== -1
 
   const items = data.slice(1)
     .map(row => {
       const r = {}
       headers.forEach((h, i) => r[h] = row[i])
       if (!r.id) return null
-      return {
+      const item = {
         id: String(r.id),
         name: String(r.name),
         category: String(r.category),
@@ -37,14 +112,19 @@ function doGet(e) {
         purchase: r.purchase === true || r.purchase === 'TRUE',
         notes: r.notes || '',
         conditions: {
-          tent: String(r.tent),
-          season: String(r.season),
+          season: String(r.season || 'all'),
           heater: r.heater === true || r.heater === 'TRUE' ? true : null,
           igt: r.igt || null,
           people_min: Number(r.people_min) || 1,
           nights_min: Number(r.nights_min) || 0,
         }
       }
+      if (hasPresetColumn) {
+        item.presets = parsePresets(r.presets)
+      } else {
+        item.conditions.tent = String(r.tent || 'both')
+      }
+      return item
     })
     .filter(Boolean)
 
@@ -56,7 +136,7 @@ function doGet(e) {
 function handleAddItem(params) {
   try {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
+    const headers = ensureItemsSheetHeaders(sheet)
     const newRow = headers.map(h => params[h] !== undefined ? params[h] : '')
     sheet.appendRow(newRow)
     return ContentService
@@ -69,20 +149,43 @@ function handleAddItem(params) {
   }
 }
 
+function handleUpdateItemContainer(params) {
+  try {
+    if (!params.id) throw new Error('Missing id')
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
+    const headers = ensureItemsSheetHeaders(sheet)
+    const idCol = headers.indexOf('id') + 1
+    const storagePrimaryCol = headers.indexOf('storage_primary') + 1
+    if (idCol <= 0 || storagePrimaryCol <= 0) throw new Error('Missing required headers')
+
+    const data = sheet.getDataRange().getValues()
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][idCol - 1]) === String(params.id)) {
+        sheet.getRange(i + 1, storagePrimaryCol).setValue(params.storage_primary || '')
+        return ContentService
+          .createTextOutput(JSON.stringify({ success: true }))
+          .setMimeType(ContentService.MimeType.JSON)
+      }
+    }
+
+    throw new Error(`Item not found: ${params.id}`)
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON)
+  }
+}
+
 function handleSavePreset(params) {
   try {
     const sheet = getOrCreatePresetsSheet()
-    sheet.appendRow([
-      params.name,
-      new Date().toISOString(),
-      params.tent,
-      params.nights,
-      params.season,
-      params.heater,
-      params.igt,
-      params.people,
-      params.checked_ids,
-    ])
+    const headers = ensurePresetsSheetHeaders(sheet)
+    const row = headers.map(header => {
+      if (header === 'created_at') return new Date().toISOString()
+      return params[header] !== undefined ? params[header] : ''
+    })
+    sheet.appendRow(row)
     return ContentService
       .createTextOutput(JSON.stringify({ success: true }))
       .setMimeType(ContentService.MimeType.JSON)
@@ -96,6 +199,7 @@ function handleSavePreset(params) {
 function handleGetPresets() {
   try {
     const sheet = getOrCreatePresetsSheet()
+    ensurePresetsSheetHeaders(sheet)
     const data = sheet.getDataRange().getValues()
     if (data.length <= 1) {
       return ContentService
@@ -117,7 +221,7 @@ function handleGetPresets() {
           igt: String(r.igt),
           people: Number(r.people),
         },
-        checked_ids: JSON.parse(r.checked_ids || '[]'),
+        checked_ids: parseJsonArray(r.checked_ids),
       }
     })
     return ContentService
@@ -136,7 +240,7 @@ function doPost(e) {
     if (action !== 'upload') throw new Error('Unknown action')
 
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
+    const headers = ensureItemsSheetHeaders(sheet)
 
     const lastRow = sheet.getLastRow()
     if (lastRow > 1) sheet.getRange(2, 1, lastRow - 1, headers.length).clearContent()

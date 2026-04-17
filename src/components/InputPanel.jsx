@@ -20,18 +20,8 @@ const TENT_STYLE = {
   dome_edoshell: { idle: 'bg-violet-50 border-violet-200 text-violet-900 hover:border-violet-400',   active: 'bg-violet-700 border-violet-700 text-white' },
 }
 
-export default function InputPanel({ input, onChange }) {
+export default function InputPanel({ input, onSelectPreset, savedPresetMap = {} }) {
   const activePreset = findPreset(input)
-
-  const select = (preset) => {
-    onChange(() => ({
-      tent:   preset.tent,
-      season: preset.season,
-      nights: preset.nights,
-      heater: preset.heater,
-      igt:    preset.igt,
-    }))
-  }
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-4 shadow-sm">
@@ -40,17 +30,18 @@ export default function InputPanel({ input, onChange }) {
         {PRESETS.map(preset => {
           const style = TENT_STYLE[preset.tent]
           const isActive = activePreset?.id === preset.id
+          const savedPreset = savedPresetMap[preset.id]
           return (
             <button
               key={preset.id}
-              onClick={() => select(preset)}
+              onClick={() => onSelectPreset(preset)}
               className={`relative text-left rounded-lg border px-2.5 py-2 transition-colors
                 ${isActive ? style.active : style.idle}`}
             >
               <span className={`absolute top-1.5 right-1.5 text-[9px] font-bold ${isActive ? 'opacity-80' : 'opacity-40'}`}>
                 {preset.id}
               </span>
-              <p className="text-xs font-bold leading-tight pr-6">{TENT_LABEL[preset.tent]}</p>
+              <p className="text-xs font-bold leading-tight pr-6">{preset.label ?? TENT_LABEL[preset.tent]}</p>
               <p className={`text-[10px] mt-0.5 ${isActive ? 'opacity-80' : 'opacity-50'}`}>
                 {SEASON_LABEL[preset.season]} · {preset.nights === 0 ? '당일' : '1박'}
               </p>
@@ -61,6 +52,11 @@ export default function InputPanel({ input, onChange }) {
               )}
               {preset.heater && (
                 <p className={`text-[10px] ${isActive ? 'opacity-80' : 'opacity-50'}`}>난로</p>
+              )}
+              {savedPreset && (
+                <p className={`mt-1 text-[10px] font-semibold ${isActive ? 'opacity-85' : 'opacity-60'}`}>
+                  체크 {savedPreset.checked_ids.length}개 저장
+                </p>
               )}
             </button>
           )

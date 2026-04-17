@@ -28,7 +28,8 @@ npx tailwindcss init -p
 
 # 7. CLAUDE.md와 items.json을 프로젝트에 복사 (이미 다운로드한 파일들)
 # CLAUDE.md → 프로젝트 루트
-# items.json → src/data/items.json
+# items.json → 프로젝트 루트 (로컬/업로드 기준 데이터)
+# 요리 프리셋 → src/data/foodPresets.js
 mkdir -p src/data
 
 # 8. .gitignore 확인 후 첫 커밋
@@ -59,7 +60,7 @@ CLAUDE.md를 먼저 읽고 전체 컨텍스트를 파악한 뒤,
 ### 계획서에 포함할 내용
 
 1. **데이터 검증**
-   - src/data/items.json 구조가 필터링 로직에 적합한지 확인
+   - items.json 구조가 필터링 로직에 적합한지 확인
    - 수정 필요한 부분 있으면 명시
 
 2. **컴포넌트 설계**
