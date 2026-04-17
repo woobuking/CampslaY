@@ -18,7 +18,7 @@ const DEFAULT_INPUT = {
 export default function App() {
   const [input, setInput] = useState(DEFAULT_INPUT)
   const { data: items, isLoading, isError } = useItems()
-  const filteredItems = usePackingFilter(items, input)
+  const filteredItems = usePackingFilter(items)
 
   if (isLoading) return (
     <div className="min-h-screen bg-stone-100 flex items-center justify-center">
