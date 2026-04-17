@@ -18,8 +18,15 @@ const ITEM_HEADERS = [
 ]
 const PRESET_HEADERS = ['name', 'created_at', 'tent', 'nights', 'season', 'heater', 'igt', 'people', 'checked_ids']
 
+function getOrCreateItemsSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet()
+  let sheet = ss.getSheetByName(SHEET_NAME)
+  if (!sheet) sheet = ss.insertSheet(SHEET_NAME)
+  return sheet
+}
+
 function ensureItemsSheetHeaders(sheet) {
-  const current = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), ITEM_HEADERS.length)).getValues()[0]
+  const current = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn() || 1, ITEM_HEADERS.length)).getValues()[0]
   const currentHeaders = current.filter(Boolean)
   if (currentHeaders.join('|') !== ITEM_HEADERS.join('|')) {
     sheet.getRange(1, 1, 1, ITEM_HEADERS.length).setValues([ITEM_HEADERS])
@@ -92,7 +99,7 @@ function doGet(e) {
   if (action === 'savePreset') return handleSavePreset(e.parameter)
   if (action === 'getPresets') return handleGetPresets()
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
+  const sheet = getOrCreateItemsSheet()
   const data = sheet.getDataRange().getValues()
   const headers = data[0]
   const hasPresetColumn = headers.indexOf('presets') !== -1
@@ -135,7 +142,7 @@ function doGet(e) {
 
 function handleAddItem(params) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
+    const sheet = getOrCreateItemsSheet()
     const headers = ensureItemsSheetHeaders(sheet)
     const newRow = headers.map(h => params[h] !== undefined ? params[h] : '')
     sheet.appendRow(newRow)
@@ -153,7 +160,7 @@ function handleUpdateItemContainer(params) {
   try {
     if (!params.id) throw new Error('Missing id')
 
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
+    const sheet = getOrCreateItemsSheet()
     const headers = ensureItemsSheetHeaders(sheet)
     const idCol = headers.indexOf('id') + 1
     const storagePrimaryCol = headers.indexOf('storage_primary') + 1
@@ -239,7 +246,7 @@ function doPost(e) {
     const { action, items } = JSON.parse(e.postData.contents)
     if (action !== 'upload') throw new Error('Unknown action')
 
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
+    const sheet = getOrCreateItemsSheet()
     const headers = ensureItemsSheetHeaders(sheet)
 
     // Preserve storage_primary values already in the sheet
