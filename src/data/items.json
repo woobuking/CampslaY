@@ -41,7 +41,6 @@
       "id": "S001",
       "name": "에도쉘",
       "category": "shelter",
-      "space": "frunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -51,13 +50,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "솔캠 전용 쉘터. 프렁크 단독 적재."
+      "notes": "솔캠 전용 쉘터. 프렁크 단독 적재.",
+      "storage_secondary": "frunk"
     },
     {
       "id": "S002",
       "name": "스테고 돔쉘터",
       "category": "shelter",
-      "space": "frunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -67,13 +66,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "스테고 본체. 이너텐트와 함께 프렁크."
+      "notes": "스테고 본체. 이너텐트와 함께 프렁크.",
+      "storage_secondary": "frunk"
     },
     {
       "id": "S003",
       "name": "이너텐트",
       "category": "shelter",
-      "space": "frunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -83,13 +82,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "스테고 이너. 돔쉘터와 함께 프렁크."
+      "notes": "스테고 이너. 돔쉘터와 함께 프렁크.",
+      "storage_secondary": "frunk"
     },
     {
       "id": "S004",
       "name": "스테고 TPU",
       "category": "shelter",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -99,13 +98,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "봄가을 전용 TPU 시트."
+      "notes": "봄가을 전용 TPU 시트.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "S005",
       "name": "TPU",
       "category": "shelter",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -115,13 +114,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "겨울 전용 TPU. 방한 성능 강화."
+      "notes": "겨울 전용 TPU. 방한 성능 강화.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "S006",
       "name": "스테고 루프 플라이",
       "category": "shelter",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -131,13 +130,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "봄가을 루프 플라이."
+      "notes": "봄가을 루프 플라이.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "S007",
       "name": "데이지 루프",
       "category": "shelter",
-      "space": "trunk_under",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -147,13 +146,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "겨울 데이지 루프."
+      "notes": "겨울 데이지 루프.",
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "L001",
       "name": "망치팩&조명 파우치 (솔캠)",
       "category": "lighting",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -163,13 +162,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "내용: 랜턴 小 1개, 루메나 3개, 헤드랜턴 1개, 블루투스 스피커, 토치 라이터."
+      "notes": "내용: 랜턴 小 1개, 루메나 3개, 헤드랜턴 1개, 블루투스 스피커, 토치 라이터.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "L002",
       "name": "첨스 파우치 (봄가을 가족)",
       "category": "lighting",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -179,13 +178,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "내용: 망치, 팩, 크레모아 랜턴 小 1개, 루메나 M3 3개, 헤드랜턴 1개, 블루투스 스피커, 토치 라이터."
+      "notes": "내용: 망치, 팩, 크레모아 랜턴 小 1개, 루메나 M3 3개, 헤드랜턴 1개, 블루투스 스피커, 토치 라이터.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "L003",
       "name": "팩&조명 파우치 (겨울 가족)",
       "category": "lighting",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -195,13 +194,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "내용: 크레모아 랜턴 小 1개, 大 1개, 알리 3개, 헤드랜턴 1개, 블루투스 스피커, 토치 라이터. 大 랜턴 추가."
+      "notes": "내용: 크레모아 랜턴 小 1개, 大 1개, 알리 3개, 헤드랜턴 1개, 블루투스 스피커, 토치 라이터. 大 랜턴 추가.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "B001",
       "name": "싱글침낭",
       "category": "bedding",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -211,13 +210,13 @@
         "nights_min": 1
       },
       "required": true,
-      "notes": "솔캠 전용 싱글침낭."
+      "notes": "솔캠 전용 싱글침낭.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "B002",
       "name": "침낭",
       "category": "bedding",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -227,13 +226,13 @@
         "nights_min": 1
       },
       "required": true,
-      "notes": "가족캠핑용 침낭."
+      "notes": "가족캠핑용 침낭.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "B003",
       "name": "에어매트 40cm 싱글",
       "category": "bedding",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -243,13 +242,13 @@
         "nights_min": 1
       },
       "required": true,
-      "notes": "솔캠용 40cm 에어매트."
+      "notes": "솔캠용 40cm 에어매트.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "B004",
       "name": "에어매트 260",
       "category": "bedding",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -259,13 +258,13 @@
         "nights_min": 1
       },
       "required": true,
-      "notes": "가족캠핑 260 에어매트. 에어펌프(전자기기 가방)로 팽창."
+      "notes": "가족캠핑 260 에어매트. 에어펌프(전자기기 가방)로 팽창.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "B005",
       "name": "260 매트 패드",
       "category": "bedding",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -275,13 +274,13 @@
         "nights_min": 1
       },
       "required": true,
-      "notes": "에어매트 아래 깔개."
+      "notes": "에어매트 아래 깔개.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "B006",
       "name": "전기장판",
       "category": "bedding",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -291,13 +290,13 @@
         "nights_min": 1
       },
       "required": true,
-      "notes": "릴선 필요. 1박 이상 시 필수."
+      "notes": "릴선 필요. 1박 이상 시 필수.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "B007",
       "name": "에어베개",
       "category": "bedding",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -307,13 +306,13 @@
         "nights_min": 1
       },
       "required": true,
-      "notes": "솔캠용."
+      "notes": "솔캠용.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "B008",
       "name": "에어베개 4개",
       "category": "bedding",
-      "space": "trunk_under",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -323,13 +322,13 @@
         "nights_min": 1
       },
       "required": true,
-      "notes": "겨울 가족캠핑용. 지하실 적재."
+      "notes": "겨울 가족캠핑용. 지하실 적재.",
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "F001",
       "name": "필드랙",
       "category": "furniture",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -339,13 +338,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "솔캠 테이블/선반."
+      "notes": "솔캠 테이블/선반.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "F002",
       "name": "크레모아 의자 (사이드)",
       "category": "furniture",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -355,13 +354,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "솔캠 의자. 트렁크 사이드 세로 적재."
+      "notes": "솔캠 의자. 트렁크 사이드 세로 적재.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "F003",
       "name": "IGT 테이블",
       "category": "furniture",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -371,13 +370,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "IGT 기본형/풀세팅 시 필수. none이면 제외."
+      "notes": "IGT 기본형/풀세팅 시 필수. none이면 제외.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "F004",
       "name": "3단 선반+우드스탠드",
       "category": "furniture",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -387,13 +386,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "봄가을 선반 세트."
+      "notes": "봄가을 선반 세트.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "F005",
       "name": "쓰레기통 우드",
       "category": "furniture",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -403,13 +402,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": ""
+      "notes": "",
+      "storage_secondary": "trunk"
     },
     {
       "id": "F006",
       "name": "IGT 해바라기 버너 거치대",
       "category": "furniture",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -420,13 +419,13 @@
       },
       "required": false,
       "optional": true,
-      "notes": "봄가을: 해바라기 버너 사용 시 선택. 겨울: 필수."
+      "notes": "봄가을: 해바라기 버너 사용 시 선택. 겨울: 필수.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "F007",
       "name": "IGT 해바라기 버너 거치대",
       "category": "furniture",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -436,13 +435,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "겨울: 필수."
+      "notes": "겨울: 필수.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "F008",
       "name": "스위블 의자 (트렁크 사이드)",
       "category": "furniture",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -452,13 +451,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "봄가을 사이드 의자."
+      "notes": "봄가을 사이드 의자.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "F009",
       "name": "재우 의자 (트렁크 사이드)",
       "category": "furniture",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -468,13 +467,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "겨울엔 트렁크 사이드. 봄가을엔 지하실."
+      "notes": "겨울엔 트렁크 사이드. 봄가을엔 지하실.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "F010",
       "name": "시우 의자",
       "category": "furniture",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -484,13 +483,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "겨울엔 트렁크 메인."
+      "notes": "겨울엔 트렁크 메인.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "F011",
       "name": "재우 의자",
       "category": "furniture",
-      "space": "trunk_under",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -500,13 +499,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "봄가을엔 지하실."
+      "notes": "봄가을엔 지하실.",
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "F012",
       "name": "엄마 의자",
       "category": "furniture",
-      "space": "trunk_under",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -516,13 +515,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "지하실 적재."
+      "notes": "지하실 적재.",
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "F013",
       "name": "시우 의자",
       "category": "furniture",
-      "space": "trunk_under",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -532,13 +531,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "봄가을엔 지하실."
+      "notes": "봄가을엔 지하실.",
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "F014",
       "name": "아빠 의자",
       "category": "furniture",
-      "space": "trunk_under",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -548,13 +547,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "겨울엔 지하실."
+      "notes": "겨울엔 지하실.",
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "C001",
       "name": "스탠리 쿨러",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "both",
         "season": "all",
@@ -564,13 +563,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "공통 아이템."
+      "notes": "공통 아이템.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C002",
       "name": "스탠리 워터저그",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -580,13 +579,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "차량 내 적재 — 시우 앞자리 (뒷좌석 발밑)."
+      "notes": "차량 내 적재 — 시우 앞자리 (뒷좌석 발밑).",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C003",
       "name": "조리도구 킷",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "both",
         "season": "all",
@@ -596,13 +595,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "공통 아이템."
+      "notes": "공통 아이템.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C004",
       "name": "양념통",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "both",
         "season": "all",
@@ -612,13 +611,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "공통 아이템."
+      "notes": "공통 아이템.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C005",
       "name": "그리들",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -628,13 +627,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "가족캠핑 전용."
+      "notes": "가족캠핑 전용.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C006",
       "name": "캠프원 버너",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -644,13 +643,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "솔캠 전용 버너."
+      "notes": "솔캠 전용 버너.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C007",
       "name": "캠프원 버너플레이트 세트",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -660,13 +659,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "솔캠 버너 플레이트."
+      "notes": "솔캠 버너 플레이트.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C008",
       "name": "해바라기 버너",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -677,13 +676,13 @@
       },
       "required": false,
       "optional": true,
-      "notes": "봄가을: 선택 아이템."
+      "notes": "봄가을: 선택 아이템.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C009",
       "name": "해바라기 버너",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -693,13 +692,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "겨울: 필수."
+      "notes": "겨울: 필수.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C010",
       "name": "커피포트",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -709,13 +708,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": ""
+      "notes": "",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C011",
       "name": "이소가스",
       "category": "cooking",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -725,13 +724,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "솔캠용."
+      "notes": "솔캠용.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "C012",
       "name": "이소가스 (작은 2개+큰 2개)",
       "category": "cooking",
-      "space": "trunk_under",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -741,13 +740,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "겨울 가족캠핑. 작은 이소가스 2개, 큰 이소가스 2개."
+      "notes": "겨울 가족캠핑. 작은 이소가스 2개, 큰 이소가스 2개.",
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "FR001",
       "name": "캠프빈 화로대",
       "category": "fire",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -757,13 +756,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "솔캠 화로대."
+      "notes": "솔캠 화로대.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "FR002",
       "name": "캠프빈 화로대",
       "category": "fire",
-      "space": "trunk_under",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -773,13 +772,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "겨울 가족캠핑 화로대. 지하실."
+      "notes": "겨울 가족캠핑 화로대. 지하실.",
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "FR003",
       "name": "착화제",
       "category": "fire",
-      "space": "trunk",
       "conditions": {
         "tent": "both",
         "season": "all",
@@ -789,13 +788,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "공통 아이템."
+      "notes": "공통 아이템.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "FR004",
       "name": "차콜스타터+숯",
       "category": "fire",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -805,13 +804,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "봄가을 가족캠핑."
+      "notes": "봄가을 가족캠핑.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "FR005",
       "name": "장작",
       "category": "fire",
-      "space": "trunk_under",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -822,13 +821,13 @@
       },
       "required": true,
       "notes": "현장 구매 아이템.",
-      "purchase": true
+      "purchase": true,
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "H001",
       "name": "소형히터",
       "category": "heating",
-      "space": "trunk_under",
       "conditions": {
         "tent": "both",
         "season": "all",
@@ -838,13 +837,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "공통. 지하실 적재."
+      "notes": "공통. 지하실 적재.",
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "H002",
       "name": "난로",
       "category": "heating",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "winter",
@@ -854,13 +853,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "겨울, 난로=on 시 필수. 차량 내 적재 — 재우 앞자리 (뒷좌석 발밑)."
+      "notes": "겨울, 난로=on 시 필수. 차량 내 적재 — 재우 앞자리 (뒷좌석 발밑).",
+      "storage_secondary": "trunk"
     },
     {
       "id": "E001",
       "name": "전자기기 가방",
       "category": "electronics",
-      "space": "trunk",
       "conditions": {
         "tent": "both",
         "season": "all",
@@ -870,13 +869,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "솔캠: 이북, N8II, 에어펌프 포함."
+      "notes": "솔캠: 이북, N8II, 에어펌프 포함.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "E002",
       "name": "릴선",
       "category": "electrical",
-      "space": "trunk_under",
       "conditions": {
         "tent": "both",
         "season": "all",
@@ -886,13 +885,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "전기장판, 소형히터 등에 필요."
+      "notes": "전기장판, 소형히터 등에 필요.",
+      "storage_secondary": "trunk_under"
     },
     {
       "id": "P001",
       "name": "옷 가방 (속옷, 겉옷, 세면도구)",
       "category": "personal",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -902,13 +901,13 @@
         "nights_min": 1
       },
       "required": true,
-      "notes": "1박 이상 시 필수."
+      "notes": "1박 이상 시 필수.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "HY001",
       "name": "설거지 바스켓 (솔캠: 스픽 시에라+커틀러리)",
       "category": "hygiene",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -918,13 +917,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": ""
+      "notes": "",
+      "storage_secondary": "trunk"
     },
     {
       "id": "HY002",
       "name": "설거지 바스켓 (가족: 스뎅 앞접시+커틀러리)",
       "category": "hygiene",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -934,13 +933,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": ""
+      "notes": "",
+      "storage_secondary": "trunk"
     },
     {
       "id": "HY003",
       "name": "설거지 도구",
       "category": "hygiene",
-      "space": "trunk",
       "conditions": {
         "tent": "edoshell",
         "season": "all",
@@ -950,13 +949,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "솔캠 전용."
+      "notes": "솔캠 전용.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "HY004",
       "name": "설거지 확장 유닛",
       "category": "hygiene",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "spring_fall",
@@ -966,13 +965,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "봄가을 가족캠핑."
+      "notes": "봄가을 가족캠핑.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "HY005",
       "name": "한장 수세미",
       "category": "hygiene",
-      "space": "trunk",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -982,13 +981,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": ""
+      "notes": "",
+      "storage_secondary": "trunk"
     },
     {
       "id": "HY006",
       "name": "키친타월",
       "category": "hygiene",
-      "space": "trunk",
       "conditions": {
         "tent": "both",
         "season": "all",
@@ -998,13 +997,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "공통."
+      "notes": "공통.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "HY007",
       "name": "물티슈",
       "category": "hygiene",
-      "space": "trunk",
       "conditions": {
         "tent": "both",
         "season": "all",
@@ -1014,13 +1013,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "공통."
+      "notes": "공통.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "BOX001",
       "name": "토르박스 75L",
       "category": "container",
-      "space": "trunk",
       "conditions": {
         "tent": "both",
         "season": "all",
@@ -1030,13 +1029,13 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "708×434×384mm. 솔캠/가족캠 공통 메인 박스."
+      "notes": "708×434×384mm. 솔캠/가족캠 공통 메인 박스.",
+      "storage_secondary": "trunk"
     },
     {
       "id": "BOX003",
       "name": "카즈미 캠핑백 100L",
       "category": "container",
-      "space": "trunk_under",
       "conditions": {
         "tent": "stego",
         "season": "all",
@@ -1046,7 +1045,8 @@
         "nights_min": 0
       },
       "required": true,
-      "notes": "가족캠핑 지하실 대형 백."
+      "notes": "가족캠핑 지하실 대형 백.",
+      "storage_secondary": "trunk_under"
     }
   ],
   "food_presets": {

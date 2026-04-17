@@ -51,7 +51,7 @@ export default function App() {
         </div>
 
         <footer className="text-center text-xs text-stone-400 pb-4">
-          총 {filteredItems.length}개 아이템 · {input.tent === 'edoshell' ? '에도쉘 솔캠' : '스테고 가족캠핑'} ·{' '}
+          총 {items.length}개 아이템 · {input.tent === 'edoshell' ? '에도쉘 솔캠' : '스테고 가족캠핑'} ·{' '}
           {input.season === 'spring_fall' ? '봄/가을' : '겨울'} ·{' '}
           {input.nights === 0 ? '당일' : `${input.nights}박`} · {input.people}명 · 매칭 {matchedIds.size}개
         </footer>
