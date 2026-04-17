@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 
 const CATEGORY_META = {
-  shelter:     { label: '쉘터',       icon: '⛺' },
+  tent:        { label: 'Tent',        icon: '🏕️' },
   lighting:    { label: '조명',       icon: '💡' },
   bedding:     { label: '침구',       icon: '🛏️' },
   furniture:   { label: '가구/테이블', icon: '🪑' },
@@ -22,7 +22,7 @@ const SPACE_BADGE = {
   cabin:       { label: '뒷좌석', cls: 'bg-pink-100 text-pink-700' },
 }
 
-const CATEGORY_ORDER = ['shelter', 'bedding', 'furniture', 'cooking', 'fire', 'heating',
+const CATEGORY_ORDER = ['tent', 'bedding', 'furniture', 'cooking', 'fire', 'heating',
   'lighting', 'electronics', 'electrical', 'hygiene', 'personal', 'container']
 
 function groupByCategory(items) {
