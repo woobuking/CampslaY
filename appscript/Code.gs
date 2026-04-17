@@ -9,9 +9,7 @@ function doGet() {
     .map(row => {
       const r = {}
       headers.forEach((h, i) => r[h] = row[i])
-
       if (!r.id) return null
-
       return {
         id: String(r.id),
         name: String(r.name),
@@ -33,9 +31,31 @@ function doGet() {
     })
     .filter(Boolean)
 
-  const output = ContentService
+  return ContentService
     .createTextOutput(JSON.stringify({ items }))
     .setMimeType(ContentService.MimeType.JSON)
+}
 
-  return output
+function doPost(e) {
+  try {
+    const { action, items } = JSON.parse(e.postData.contents)
+    if (action !== 'upload') throw new Error('Unknown action')
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
+
+    const lastRow = sheet.getLastRow()
+    if (lastRow > 1) sheet.getRange(2, 1, lastRow - 1, headers.length).clearContent()
+
+    const rows = items.map(item => headers.map(h => item[h] ?? ''))
+    sheet.getRange(2, 1, rows.length, headers.length).setValues(rows)
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true, count: items.length }))
+      .setMimeType(ContentService.MimeType.JSON)
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON)
+  }
 }

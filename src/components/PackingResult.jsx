@@ -19,6 +19,7 @@ const SPACE_BADGE = {
   frunk:       { label: '프렁크', cls: 'bg-blue-100 text-blue-700' },
   trunk:       { label: '트렁크', cls: 'bg-green-100 text-green-700' },
   trunk_under: { label: '지하실', cls: 'bg-amber-100 text-amber-700' },
+  cabin:       { label: '뒷좌석', cls: 'bg-pink-100 text-pink-700' },
 }
 
 function ItemRow({ item, checked, onToggle, matched }) {

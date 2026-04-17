@@ -53,16 +53,18 @@ function ZoneSvgRect({ zoneKey, items, x, y, width, height, rx, disabled, label,
   )
 }
 
-export default function CarVisualizer({ items, input }) {
-  const frunk = items.filter(i => i.storage_secondary === 'frunk')
-  const trunk = items.filter(i => i.storage_secondary === 'trunk')
-  const trunkUnder = items.filter(i => i.storage_secondary === 'trunk_under')
+export default function CarVisualizer({ items, matchedIds, input }) {
+  const matched = items.filter(i => matchedIds.has(i.id))
+  const frunk = matched.filter(i => i.storage_secondary === 'frunk')
+  const trunk = matched.filter(i => i.storage_secondary === 'trunk')
+  const trunkUnder = matched.filter(i => i.storage_secondary === 'trunk_under')
+  const cabin = matched.filter(i => i.storage_secondary === 'cabin')
   const underDisabled = input.nights === 0
 
   const frunkH = Math.max(80, 44 + frunk.length * 15)
   const trunkH = Math.max(100, 44 + trunk.length * 15)
   const underH = 56
-  const cabinH = 44
+  const cabinH = cabin.length > 0 ? Math.max(44, 28 + cabin.length * 14) : 44
   const gap = 8
   const svgW = 280
   const zoneX = 30
@@ -98,10 +100,17 @@ export default function CarVisualizer({ items, input }) {
 
         {/* Cabin (seats) */}
         <rect x={zoneX} y={cabinY} width={zoneW} height={cabinH} rx={6}
-          fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
-        <text x={svgW / 2} y={cabinY + cabinH / 2 + 4} textAnchor="middle" fontSize="9" fill="#94a3b8">
+          fill={cabin.length > 0 ? '#fce7f3' : '#e2e8f0'}
+          stroke={cabin.length > 0 ? '#ec4899' : '#cbd5e1'} strokeWidth="1" />
+        <text x={svgW / 2} y={cabinY + 14} textAnchor="middle" fontSize="9"
+          fill={cabin.length > 0 ? '#9d174d' : '#94a3b8'}>
           뒷좌석 (탑승 공간)
         </text>
+        {cabin.map((item, i) => (
+          <text key={item.id} x={zoneX + 6} y={cabinY + 26 + i * 14} fontSize="8.5" fill="#9d174d">
+            · {item.name.length > 14 ? item.name.slice(0, 14) + '…' : item.name}
+          </text>
+        ))}
 
         {/* Rear wheels */}
         <rect x="0" y={trunkY + trunkH / 2 - wheelH / 2} width={wheelW} height={wheelH} rx={wheelRx} fill="#475569" />
