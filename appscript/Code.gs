@@ -242,10 +242,25 @@ function doPost(e) {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
     const headers = ensureItemsSheetHeaders(sheet)
 
+    // Preserve storage_primary values already in the sheet
+    const existingData = sheet.getDataRange().getValues()
+    const existingHeaders = existingData[0]
+    const idIdx = existingHeaders.indexOf('id')
+    const spIdx = existingHeaders.indexOf('storage_primary')
+    const storagePrimaryMap = {}
+    if (idIdx >= 0 && spIdx >= 0) {
+      existingData.slice(1).forEach(row => {
+        if (row[idIdx] && row[spIdx]) storagePrimaryMap[String(row[idIdx])] = row[spIdx]
+      })
+    }
+
     const lastRow = sheet.getLastRow()
     if (lastRow > 1) sheet.getRange(2, 1, lastRow - 1, headers.length).clearContent()
 
-    const rows = items.map(item => headers.map(h => item[h] ?? ''))
+    const rows = items.map(item => headers.map(h => {
+      if (h === 'storage_primary') return item[h] || storagePrimaryMap[item.id] || ''
+      return item[h] ?? ''
+    }))
     sheet.getRange(2, 1, rows.length, headers.length).setValues(rows)
 
     return ContentService
