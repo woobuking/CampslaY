@@ -1,121 +1,61 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import InputPanel from './components/InputPanel'
+import CarVisualizer from './components/CarVisualizer'
+import PackingResult from './components/PackingResult'
+import RecipeResult from './components/RecipeResult'
+import { useItems } from './hooks/useItems'
+import { usePackingFilter } from './hooks/usePackingFilter'
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+const DEFAULT_INPUT = {
+  tent: 'edoshell',
+  nights: 1,
+  season: 'spring_fall',
+  heater: false,
+  igt: 'none',
+  people: 1,
 }
 
-export default App
+export default function App() {
+  const [input, setInput] = useState(DEFAULT_INPUT)
+  const { data: items, isLoading, isError } = useItems()
+  const filteredItems = usePackingFilter(items, input)
+
+  if (isLoading) return (
+    <div className="min-h-screen bg-stone-100 flex items-center justify-center">
+      <p className="text-stone-500 text-sm">아이템 불러오는 중...</p>
+    </div>
+  )
+
+  if (isError) return (
+    <div className="min-h-screen bg-stone-100 flex items-center justify-center">
+      <p className="text-red-500 text-sm">데이터를 불러올 수 없습니다. API 설정을 확인해주세요.</p>
+    </div>
+  )
+
+  return (
+    <div className="min-h-screen bg-stone-100">
+      <header className="bg-stone-900 text-white px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-baseline gap-3">
+          <h1 className="text-xl font-bold tracking-tight">CampslaY</h1>
+          <span className="text-stone-400 text-sm">Tesla Model Y 2025 Juniper 캠핑 패킹 어시스턴트</span>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto p-4 space-y-4">
+        <InputPanel input={input} onChange={setInput} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+          <CarVisualizer items={filteredItems} input={input} />
+          <PackingResult items={filteredItems} input={input} />
+          <RecipeResult input={input} />
+        </div>
+
+        <footer className="text-center text-xs text-stone-400 pb-4">
+          총 {filteredItems.length}개 아이템 · {input.tent === 'edoshell' ? '에도쉘 솔캠' : '스테고 가족캠핑'} ·{' '}
+          {input.season === 'spring_fall' ? '봄/가을' : '겨울'} ·{' '}
+          {input.nights === 0 ? '당일' : `${input.nights}박`} · {input.people}명
+        </footer>
+      </main>
+    </div>
+  )
+}
