@@ -87,7 +87,7 @@ function ItemMeta({ item, isDefault, containersById }) {
   )
 }
 
-function ActiveItemRow({ item, packed, isDefault, containers, containersById, onTogglePacked, onToggleSelected, onAssignContainer }) {
+function ActiveItemRow({ item, packed, isDefault, containers, containersById, showContainerSelect, onTogglePacked, onToggleSelected, onAssignContainer }) {
   return (
     <li className="rounded border border-stone-200 bg-white px-2 py-2">
       <div className="flex items-start gap-2">
@@ -112,7 +112,7 @@ function ActiveItemRow({ item, packed, isDefault, containers, containersById, on
           )}
         </div>
         <div className="flex flex-col gap-1.5 items-end">
-          <ContainerSelect item={item} containers={containers} onAssignContainer={onAssignContainer} />
+          {showContainerSelect && <ContainerSelect item={item} containers={containers} onAssignContainer={onAssignContainer} />}
           <button
             type="button"
             onClick={() => onToggleSelected(item.id)}
@@ -126,7 +126,7 @@ function ActiveItemRow({ item, packed, isDefault, containers, containersById, on
   )
 }
 
-function InactiveItemRow({ item, isDefault, containers, containersById, onToggleSelected, onAssignContainer }) {
+function InactiveItemRow({ item, isDefault, containers, containersById, showContainerSelect, onToggleSelected, onAssignContainer }) {
   return (
     <li className="rounded border border-stone-200 bg-stone-50 px-2 py-2">
       <div className="flex items-start gap-2">
@@ -146,7 +146,7 @@ function InactiveItemRow({ item, isDefault, containers, containersById, onToggle
           )}
         </div>
         <div className="flex flex-col gap-1.5 items-end">
-          <ContainerSelect item={item} containers={containers} onAssignContainer={onAssignContainer} />
+          {showContainerSelect && <ContainerSelect item={item} containers={containers} onAssignContainer={onAssignContainer} />}
           <button
             type="button"
             onClick={() => onToggleSelected(item.id)}
@@ -307,6 +307,7 @@ export default function PackingResult({
 }) {
   const [activeQuery, setActiveQuery] = useState('')
   const [inactiveQuery, setInactiveQuery] = useState('')
+  const [showContainerSelect, setShowContainerSelect] = useState(false)
 
   const containersById = items
     .filter(item => item.category === 'container')
@@ -336,6 +337,16 @@ export default function PackingResult({
               목록 비우기
             </button>
           )}
+          <button
+            onClick={() => setShowContainerSelect(v => !v)}
+            className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+              showContainerSelect
+                ? 'bg-stone-800 border-stone-800 text-white'
+                : 'bg-white border-stone-300 text-stone-500 hover:border-stone-500'
+            }`}
+          >
+            수납 지정
+          </button>
         </div>
       </div>
 
@@ -360,6 +371,7 @@ export default function PackingResult({
                   isDefault={matchedIds.has(item.id)}
                   containers={activeContainers}
                   containersById={containersById}
+                  showContainerSelect={showContainerSelect}
                   onTogglePacked={onTogglePacked}
                   onToggleSelected={onToggleSelected}
                   onAssignContainer={onAssignContainer}
@@ -380,6 +392,7 @@ export default function PackingResult({
                   isDefault={matchedIds.has(item.id)}
                   containers={activeContainers}
                   containersById={containersById}
+                  showContainerSelect={showContainerSelect}
                   onToggleSelected={onToggleSelected}
                   onAssignContainer={onAssignContainer}
                 />
