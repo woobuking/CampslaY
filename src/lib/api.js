@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_SHEETS_API_URL
+const API_URL = 'https://script.google.com/macros/s/AKfycbzdwDcBgD39-ncq-mfji1kqni0raWHNEaSUTdntCy74IRlDQ7FUD1lwUmMFDgMDvkBzQQ/exec'
 
 export async function fetchItems() {
   const res = await fetch(API_URL)
