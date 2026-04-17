@@ -127,11 +127,12 @@
       "required": true,
       "purchase": false,
       "notes": "봄가을 루프 플라이.",
-      "storage_secondary": "trunk",
+      "storage_secondary": "trunk_under",
       "presets": [
         "P03",
         "P04"
-      ]
+      ],
+      "storage_primary": "BOX003"
     },
     {
       "id": "L003",
@@ -519,7 +520,7 @@
       "required": true,
       "purchase": false,
       "notes": "사계절 / 크레모아랑 번갈아 사용",
-      "storage_secondary": "trunk_under",
+      "storage_secondary": "trunk",
       "presets": [
         "P05"
       ]
