@@ -1,67 +1,83 @@
 import { PRESETS, findPreset } from '../lib/presets'
 
+const PRESET_TITLE = {
+  P01: '에도쉘 캠프닉',
+  P02: '에도쉘 1박',
+  P03: '스테고 Basic',
+  P04: '스테고 Full',
+  P05: '스테고 겨울',
+  P06: '돔+타프 Basic',
+  P07: '돔+타프 Full',
+  P08: '돔+에도쉘 Basic',
+  P09: '돔+에도쉘 Full',
+}
+
 const TENT_LABEL = {
-  edoshell:      '에도쉘 솔캠',
-  stego:         '스테고',
-  dome_tarp:     '돔+타프',
-  dome_edoshell: '돔+에도쉘',
+  edoshell: '에도쉘',
+  stego: '스테고',
+  dome_tarp: '돔텐트+타프',
+  dome_edoshell: '돔텐트+에도쉘',
 }
 
 const SEASON_LABEL = {
   spring_fall: '봄/가을',
-  summer:      '여름',
-  winter:      '겨울',
+  summer: '여름',
+  winter: '겨울',
 }
 
-const TENT_STYLE = {
-  edoshell:      { idle: 'bg-stone-50 border-stone-200 text-stone-700 hover:border-stone-400',       active: 'bg-stone-800 border-stone-800 text-white' },
-  stego:         { idle: 'bg-emerald-50 border-emerald-200 text-emerald-900 hover:border-emerald-400', active: 'bg-emerald-700 border-emerald-700 text-white' },
-  dome_tarp:     { idle: 'bg-sky-50 border-sky-200 text-sky-900 hover:border-sky-400',               active: 'bg-sky-600 border-sky-600 text-white' },
-  dome_edoshell: { idle: 'bg-violet-50 border-violet-200 text-violet-900 hover:border-violet-400',   active: 'bg-violet-700 border-violet-700 text-white' },
+function getPresetTitle(preset) {
+  return PRESET_TITLE[preset.id] ?? TENT_LABEL[preset.tent] ?? preset.id
+}
+
+function getPresetMeta(preset) {
+  const nights = preset.nights === 0 ? '당일' : `${preset.nights}박`
+  const heater = preset.heater ? '난로' : '무난방'
+  const igt = preset.igt === 'none' ? 'IGT 없음' : `IGT ${preset.igt === 'basic' ? 'Basic' : 'Full'}`
+  return `${TENT_LABEL[preset.tent] ?? preset.tent} · ${SEASON_LABEL[preset.season]} · ${nights} · ${heater} · ${igt}`
 }
 
 export default function InputPanel({ input, onSelectPreset, savedPresetMap = {} }) {
   const activePreset = findPreset(input)
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-4 shadow-sm">
-      <h2 className="font-bold text-base text-stone-800 mb-3">캠핑 조건 설정</h2>
-      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+    <section>
+      <div className="mb-4 text-center">
+        <h1 className="paper-title">CampslaY</h1>
+        <p className="paper-subtitle">MODEL Y CAMPING PRESET</p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-x-3 gap-y-2">
         {PRESETS.map(preset => {
-          const style = TENT_STYLE[preset.tent]
           const isActive = activePreset?.id === preset.id
           const savedPreset = savedPresetMap[preset.id]
           return (
             <button
               key={preset.id}
               onClick={() => onSelectPreset(preset)}
-              className={`relative text-left rounded-lg border px-2.5 py-2 transition-colors
-                ${isActive ? style.active : style.idle}`}
+              className={`group min-h-20 rounded border px-2 py-2 text-left transition ${
+                isActive
+                  ? 'border-[#506036] bg-[#e6eed8] text-[#262820]'
+                  : 'border-[#cfd5c7] bg-transparent text-stone-600 hover:border-[#506036] hover:bg-white/45'
+              }`}
             >
-              <span className={`absolute top-1.5 right-1.5 text-[9px] font-bold ${isActive ? 'opacity-80' : 'opacity-40'}`}>
-                {preset.id}
+              <span className="mb-1 flex items-center gap-1.5 text-[11px] font-bold">
+                <span className={`inline-flex h-5 min-w-8 items-center justify-center rounded-sm border px-1 ${
+                  isActive ? 'border-[#506036] bg-[#506036] text-white' : 'border-[#cfd5c7] bg-white/70 text-stone-500'
+                }`}>
+                  {preset.id}
+                </span>
+                {savedPreset && <span className="text-[#8a6c1a]">저장</span>}
               </span>
-              <p className="text-xs font-bold leading-tight pr-6">{preset.label ?? TENT_LABEL[preset.tent]}</p>
-              <p className={`text-[10px] mt-0.5 ${isActive ? 'opacity-80' : 'opacity-50'}`}>
-                {SEASON_LABEL[preset.season]} · {preset.nights === 0 ? '당일' : '1박'}
-              </p>
-              {preset.igt !== 'none' && (
-                <p className={`text-[10px] ${isActive ? 'opacity-80' : 'opacity-50'}`}>
-                  IGT {preset.igt === 'basic' ? 'Basic' : 'Full'}
-                </p>
-              )}
-              {preset.heater && (
-                <p className={`text-[10px] ${isActive ? 'opacity-80' : 'opacity-50'}`}>난로</p>
-              )}
-              {savedPreset && (
-                <p className={`mt-1 text-[10px] font-semibold ${isActive ? 'opacity-85' : 'opacity-60'}`}>
-                  체크 {savedPreset.checked_ids.length}개 저장
-                </p>
-              )}
+              <span className="block text-xs font-bold leading-snug text-[#2f3429]">
+                {getPresetTitle(preset)}
+              </span>
+              <span className="mt-0.5 block text-[10px] leading-snug text-stone-500">
+                {getPresetMeta(preset)}
+              </span>
             </button>
           )
         })}
       </div>
-    </div>
+    </section>
   )
 }

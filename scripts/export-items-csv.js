@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const { items } = JSON.parse(readFileSync(join(__dirname, '../items.json'), 'utf-8'))
+const { items } = JSON.parse(readFileSync(join(__dirname, '../items.json'), 'utf-8').replace(/^\uFEFF/, ''))
 
 const headers = [
   'id',

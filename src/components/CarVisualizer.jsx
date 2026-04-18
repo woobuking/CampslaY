@@ -1,67 +1,70 @@
-import modelYImg from '../assets/model_y.png'
-
 const ZONE_CONFIG = {
   frunk: {
     label: '프렁크',
-    color: { bg: '#dbeafe', border: '#3b82f6', text: '#1e40af', count: '#3b82f6' },
-    empty: { bg: '#f8fafc', border: '#e2e8f0', text: '#94a3b8', count: '#cbd5e1' },
+    note: '앞 수납',
+    color: { bg: '#eef6ff', border: '#6f9fcf', text: '#1d4f7a', fill: '#3f7fb8' },
+    empty: { bg: '#f7f8f6', border: '#d5d8cf', text: '#8a8f82', fill: '#c8ccc2' },
   },
   trunk: {
     label: '트렁크',
-    color: { bg: '#dcfce7', border: '#22c55e', text: '#15803d', count: '#16a34a' },
-    empty: { bg: '#f8fafc', border: '#e2e8f0', text: '#94a3b8', count: '#cbd5e1' },
+    note: '메인 수납',
+    color: { bg: '#edf8f1', border: '#78a889', text: '#2d6b43', fill: '#4c8b61' },
+    empty: { bg: '#f7f8f6', border: '#d5d8cf', text: '#8a8f82', fill: '#c8ccc2' },
   },
   trunk_under: {
     label: '지하실',
-    color: { bg: '#fef3c7', border: '#f59e0b', text: '#b45309', count: '#d97706' },
-    empty: { bg: '#f8fafc', border: '#e2e8f0', text: '#94a3b8', count: '#cbd5e1' },
-    disabled: { bg: '#f3f4f6', border: '#e5e7eb', text: '#9ca3af', count: '#9ca3af' },
+    note: '하부 수납',
+    color: { bg: '#fff7dc', border: '#c8a24d', text: '#815f13', fill: '#b58724' },
+    empty: { bg: '#f7f8f6', border: '#d5d8cf', text: '#8a8f82', fill: '#c8ccc2' },
+    disabled: { bg: '#f0f0ed', border: '#d5d5cf', text: '#9a9a91', fill: '#bdbdb7' },
   },
 }
 
-const PROGRESS_COLORS = {
-  0:   '#e2e8f0',
-  25:  '#93c5fd',
-  50:  '#60a5fa',
-  75:  '#3b82f6',
-  100: '#1d4ed8',
-}
-
 function progressColor(pct) {
-  if (pct >= 100) return PROGRESS_COLORS[100]
-  if (pct >= 75)  return PROGRESS_COLORS[75]
-  if (pct >= 50)  return PROGRESS_COLORS[50]
-  if (pct >= 25)  return PROGRESS_COLORS[25]
-  return PROGRESS_COLORS[0]
+  if (pct >= 100) return '#506036'
+  if (pct >= 70) return '#6f8450'
+  if (pct >= 35) return '#c4a557'
+  return '#c8ccc2'
 }
 
-function ProgressRing({ done, total, size = 72 }) {
+function ProgressRing({ done, total, size = 92 }) {
   const pct = total === 0 ? 0 : Math.round((done / total) * 100)
-  const r = (size - 10) / 2
+  const r = (size - 12) / 2
   const circ = 2 * Math.PI * r
   const dash = (pct / 100) * circ
-  const color = progressColor(pct)
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#e2e8f0" strokeWidth="7" />
+    <div className="flex items-center gap-3">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-label={`진행률 ${pct}%`}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="#fbfcfa" stroke="#d9ddd2" strokeWidth="8" />
         <circle
-          cx={size/2} cy={size/2} r={r}
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
           fill="none"
-          stroke={color}
-          strokeWidth="7"
+          stroke={progressColor(pct)}
+          strokeWidth="8"
           strokeLinecap="round"
           strokeDasharray={`${dash} ${circ}`}
-          transform={`rotate(-90 ${size/2} ${size/2})`}
-          style={{ transition: 'stroke-dasharray 0.4s ease' }}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          style={{ transition: 'stroke-dasharray 0.4s ease, stroke 0.4s ease' }}
         />
-        <text x={size/2} y={size/2 + 1} textAnchor="middle" dominantBaseline="middle"
-          fontSize="15" fontWeight="700" fill="#1e293b">
+        <text
+          x={size / 2}
+          y={size / 2 + 1}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize="17"
+          fontWeight="800"
+          fill="#262820"
+        >
           {pct}%
         </text>
       </svg>
-      <p className="text-[10px] text-stone-400 mt-0.5">{done}/{total} 완료</p>
+      <div>
+        <p className="text-sm font-bold text-[#2f3429]">PACKED</p>
+        <p className="text-xs text-stone-500">{done}/{total} 완료</p>
+      </div>
     </div>
   )
 }
@@ -73,41 +76,51 @@ function ZoneBar({ zoneKey, items, packedIds, disabled }) {
   const pct = items.length === 0 ? 0 : Math.round((done / items.length) * 100)
 
   return (
-    <div className="rounded-lg border px-3 py-2" style={{ background: theme.bg, borderColor: theme.border }}>
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-xs font-bold" style={{ color: theme.text }}>{cfg.label}</span>
-        <span className="text-[10px]" style={{ color: theme.count }}>
-          {disabled ? '무박 미사용' : `${done}/${items.length}`}
+    <section className="rounded-lg border px-3 py-3" style={{ background: theme.bg, borderColor: theme.border }}>
+      <div className="mb-2 flex items-start justify-between gap-3">
+        <div>
+          <h3 className="text-sm font-bold" style={{ color: theme.text }}>{cfg.label}</h3>
+          <p className="text-[11px]" style={{ color: theme.text }}>{disabled ? '당일 캠프닉에서는 비활성' : cfg.note}</p>
+        </div>
+        <span className="rounded border bg-white/70 px-2 py-0.5 text-xs font-bold" style={{ color: theme.text, borderColor: theme.border }}>
+          {disabled ? '-' : `${done}/${items.length}`}
         </span>
       </div>
+
+      {!disabled && (
+        <div className="mb-2 h-2 overflow-hidden rounded bg-white/80">
+          <div
+            className="h-full transition-all duration-500"
+            style={{ width: `${pct}%`, background: theme.fill }}
+          />
+        </div>
+      )}
+
       {!disabled && items.length > 0 && (
-        <>
-          <div className="w-full h-1.5 rounded-full bg-white/60 overflow-hidden mb-1.5">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${pct}%`, background: theme.border }}
-            />
-          </div>
-          <div className="flex flex-wrap gap-x-2 gap-y-0.5">
-            {items.map(item => {
-              const checked = packedIds.has(item.id)
-              return (
-                <span
-                  key={item.id}
-                  className={`text-[10px] ${checked ? 'line-through opacity-40' : ''}`}
-                  style={{ color: theme.text }}
-                >
-                  {checked ? '✓' : '·'} {item.name.length > 12 ? item.name.slice(0, 12) + '…' : item.name}
-                </span>
-              )
-            })}
-          </div>
-        </>
+        <ul className="grid grid-cols-1 gap-1">
+          {items.slice(0, 8).map(item => {
+            const checked = packedIds.has(item.id)
+            return (
+              <li
+                key={item.id}
+                className={`truncate text-xs ${checked ? 'line-through decoration-2 opacity-45' : ''}`}
+                style={{ color: theme.text }}
+                title={item.name}
+              >
+                {checked ? '✓' : '○'} {item.name}
+              </li>
+            )
+          })}
+          {items.length > 8 && (
+            <li className="text-xs" style={{ color: theme.text }}>외 {items.length - 8}개</li>
+          )}
+        </ul>
       )}
+
       {!disabled && items.length === 0 && (
-        <p className="text-[10px]" style={{ color: theme.count }}>아이템 없음</p>
+        <p className="text-xs" style={{ color: theme.text }}>아직 배치된 아이템이 없습니다.</p>
       )}
-    </div>
+    </section>
   )
 }
 
@@ -122,28 +135,29 @@ export default function CarVisualizer({ items, selectedIds = new Set(), packedId
   const doneItems = selected.filter(i => packedIds.has(i.id)).length
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
-      {/* Car image */}
-      <div className="relative bg-gradient-to-b from-stone-100 to-white px-4 pt-4 pb-2">
-        <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-1">Tesla Model Y Juniper</p>
-        <img src={modelYImg} alt="Model Y" className="w-full max-h-36 object-contain" />
-      </div>
-
-      {/* Progress ring + title */}
-      <div className="flex items-center justify-between px-4 py-3 border-t border-stone-100">
+    <aside>
+      <div className="mb-3 flex items-end justify-between gap-3">
         <div>
-          <h2 className="font-bold text-base text-stone-800">적재 현황</h2>
-          <p className="text-xs text-stone-400 mt-0.5">활성 {totalItems}개 아이템</p>
+          <h2 className="paper-section-title">Storage Zones</h2>
+          <p className="paper-section-subtitle">MODEL Y</p>
         </div>
-        <ProgressRing done={doneItems} total={totalItems} size={68} />
+        <p className="text-xs font-semibold text-stone-500">활성 {totalItems}개</p>
       </div>
 
-      {/* Zone bars */}
-      <div className="px-4 pb-4 space-y-2">
+      <div className="relative mb-4 overflow-hidden rounded border border-[#cfd5c7] bg-white/50 px-4 py-5">
+        <div className="absolute bottom-0 left-0 h-8 w-full bg-[#dfe8d1]" />
+        <img src="/model-y-checklist.png" alt="Tesla Model Y" className="relative z-10 mx-auto max-h-32 w-full object-contain opacity-90 mix-blend-multiply" />
+      </div>
+
+      <div className="mb-4">
+        <ProgressRing done={doneItems} total={totalItems} />
+      </div>
+
+      <div className="space-y-2">
         <ZoneBar zoneKey="frunk" items={frunk} packedIds={packedIds} />
         <ZoneBar zoneKey="trunk" items={trunk} packedIds={packedIds} />
         <ZoneBar zoneKey="trunk_under" items={trunkUnder} packedIds={packedIds} disabled={underDisabled} />
       </div>
-    </div>
+    </aside>
   )
 }

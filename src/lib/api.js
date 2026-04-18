@@ -2,10 +2,18 @@ const API_URL = import.meta.env.VITE_SHEETS_API_URL ||
   'https://script.google.com/macros/s/AKfycbzdwDcBgD39-ncq-mfji1kqni0raWHNEaSUTdntCy74IRlDQ7FUD1lwUmMFDgMDvkBzQQ/exec'
 
 export async function fetchItems() {
-  const res = await fetch(API_URL)
-  if (!res.ok) throw new Error('Failed to fetch items')
-  const data = await res.json()
-  return data.items
+  try {
+    const res = await fetch(API_URL)
+    if (!res.ok) throw new Error('Failed to fetch items')
+    const data = await res.json()
+    return data.items
+  } catch (err) {
+    console.warn('Using local checklist fallback', err)
+    const localRes = await fetch('/items.json')
+    if (!localRes.ok) throw new Error('Failed to fetch local items')
+    const localData = await localRes.json()
+    return localData.items
+  }
 }
 
 export async function addItem(item) {
@@ -46,8 +54,13 @@ export async function savePreset(name, input, checkedIds) {
 }
 
 export async function fetchPresets() {
-  const res = await fetch(`${API_URL}?action=getPresets`)
-  if (!res.ok) throw new Error('Failed to fetch presets')
-  const data = await res.json()
-  return Array.isArray(data.presets) ? data.presets : []
+  try {
+    const res = await fetch(`${API_URL}?action=getPresets`)
+    if (!res.ok) throw new Error('Failed to fetch presets')
+    const data = await res.json()
+    return Array.isArray(data.presets) ? data.presets : []
+  } catch (err) {
+    console.warn('Using empty preset fallback', err)
+    return []
+  }
 }

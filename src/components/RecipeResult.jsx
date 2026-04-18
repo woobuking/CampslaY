@@ -1,91 +1,69 @@
-import { getFoodPreset } from '../data/foodPresets'
-import { getDefaultPeople } from '../lib/presets'
-
-const SUMMER_FAMILY_RECIPES = [
-  { name: '냉모밀 + 유부초밥', desc: '더운 날 먹기 편한 한 끼. 최소 조리로 바로 완성.' },
-  { name: '차돌 비빔국수', desc: '차돌박이만 빠르게 굽고 비빔국수에 얹기 좋음.' },
-  { name: '오꼬노미야끼', desc: '그리들 한 판 요리로 아이들까지 같이 먹기 좋음.' },
-  { name: '대패삼겹 숙주볶음', desc: '대패삼겹과 숙주를 센 불에 빠르게 볶는 여름 메뉴.' },
-  { name: '새우 버터구이', desc: '버터와 마늘만 챙기면 짧게 조리해도 만족감이 큼.' },
+const SUMMER_RECIPES = [
+  { name: '냉모밀과 초밥', desc: '더운 날 바로 먹기 좋은 조합. 조리 시간을 줄이기 좋습니다.' },
+  { name: '차돌 비빔국수', desc: '차돌박이만 빠르게 굽고 비빔국수에 올립니다.' },
+  { name: '새우 버터구이', desc: '버터와 마늘만 있으면 짧은 시간에 완성됩니다.' },
 ]
 
 const RECIPES = {
   edoshell: {
     spring_fall: [
-      { name: '삼겹살 + 쌈', desc: '버너에 그릴 올려 삼겹살 구이. 쌈야채 곁들이기.' },
-      { name: '짜파구리', desc: '짜파게티 + 오징어짬뽕. 솔캠 야간 라면의 정석.' },
-      { name: '소시지 구이', desc: '화로대 위 직화 소시지. 간단하고 맛있음.' },
-      { name: '참치 야채 볶음밥', desc: '햇반 + 참치 + 양파. 캠프원 버너 활용.' },
-      { name: '어묵 탕', desc: '작은 냄비에 어묵 + 다시마육수. 야식으로 최고.' },
+      { name: '삼겹살 구이', desc: '버너와 그리들로 간단하게 굽는 솔캠 기본 메뉴.' },
+      { name: '짜파구리', desc: '준비물이 적고 밤 시간에 어울리는 라면 메뉴.' },
+      { name: '소시지 구이', desc: '화로대나 팬 모두 잘 맞는 간단한 안주.' },
     ],
     winter: [
-      { name: '부대찌개', desc: '햄 + 소시지 + 라면 + 김치. 겨울 캠핑 필수 요리.' },
-      { name: '짜파구리', desc: '짜파게티 + 오징어짬뽕. 추운 날 한 그릇.' },
-      { name: '고구마 구이', desc: '화로대 직화. 은박지로 싸서 잉걸불에.' },
-      { name: '닭볶음탕', desc: '손질 닭 + 양념장. 미리 준비해오면 편함.' },
-      { name: '어묵 탕', desc: '겨울 야식의 정답. 따뜻한 국물.' },
+      { name: '부대찌개', desc: '난로를 켠 날 잘 어울리는 따뜻한 국물 메뉴.' },
+      { name: '고구마 구이', desc: '화로대 잔불에 올려두기 좋은 간식.' },
+      { name: '어묵탕', desc: '국물과 꼬치를 함께 준비하면 정리가 쉽습니다.' },
     ],
   },
   stego: {
     spring_fall: [
-      { name: '그리들 삼겹살', desc: '그리들 달궈 삼겹살 + 파채. 가족 모두 좋아하는 메뉴.' },
-      { name: '밀키트 요리', desc: '시판 밀키트 활용. 재료 손질 없이 간편하게.' },
-      { name: '떡볶이', desc: '그리들에 떡볶이 + 순대. 아이들 좋아함.' },
-      { name: '바비큐 치킨', desc: '마리네이드한 닭다리 숯불 직화. 차콜스타터 활용.' },
-      { name: '소불고기 + 쌈', desc: '불고기 + 채소 + 버섯. 그리들에 볶아서 쌈으로.' },
+      { name: '그리들 삼겹살', desc: '가족캠에서 실패 확률이 낮은 기본 메뉴.' },
+      { name: '바비큐 치킨', desc: '손질된 닭과 소스를 준비하면 조리가 단순합니다.' },
+      { name: '불고기 볶음밥', desc: '남은 고기와 밥을 한 번에 정리하기 좋습니다.' },
     ],
     winter: [
-      { name: '그리들 삼겹살', desc: '겨울엔 더 맛있는 직화 삼겹살. 해바라기 버너 활용.' },
-      { name: '부대찌개', desc: '햄 + 소시지 + 김치 + 라면. 온 가족 포만감.' },
-      { name: '된장찌개 + 밥', desc: '간단한 된장찌개에 햇반. 아침 식사로 완벽.' },
-      { name: '어묵탕 꼬치', desc: '어묵 꼬치에 다시마 육수. 아이들 간식으로 좋음.' },
-      { name: '핫초코 & 컵라면', desc: '야간 야식. 커피포트로 물 끓여 즉석 완성.' },
+      { name: '부대찌개', desc: '소시지, 김치, 라면으로 빠르게 끓이는 겨울 메뉴.' },
+      { name: '된장찌개와 밥', desc: '아이와 함께 먹기 좋은 따뜻한 식사.' },
+      { name: '핫초코와 컵라면', desc: '야식이나 아침 간식으로 부담이 적습니다.' },
     ],
   },
   dome_tarp: {
-    summer: SUMMER_FAMILY_RECIPES,
+    summer: SUMMER_RECIPES,
   },
   dome_edoshell: {
-    summer: SUMMER_FAMILY_RECIPES,
+    summer: SUMMER_RECIPES,
   },
 }
 
+const FOOD_BASE = {
+  edoshell: ['물 2L', '햇반 3개', '라면 2개', '과자', '커피 또는 차', '쓰레기 봉투'],
+  family: ['물 2L x 인원', '햇반', '간편 소스', '간식', '아이스박스 음료', '쓰레기 봉투'],
+}
+
 function FoodPresetSection({ input }) {
-  const preset = getFoodPreset(input.tent)
-  const people = input.people ?? getDefaultPeople(input.tent)
-
-  if (!preset) return null
-
-  const items = [...preset.base]
   const isSolo = input.tent === 'edoshell'
+  const people = input.people ?? (isSolo ? 1 : 2)
+  const items = [...(isSolo ? FOOD_BASE.edoshell : FOOD_BASE.family)]
 
   if (input.nights > 0) {
-    const perNight = isSolo ? preset.per_night : preset.per_night_per_person
-    if (perNight) {
-      Object.entries(perNight).forEach(([key, val]) => {
-        const qty = typeof val === 'number'
-          ? isSolo
-            ? `${val * input.nights}`
-            : `${val * input.nights * people}`
-          : `${val}`
-        items.push(`${key} ${qty}${typeof val === 'number' ? '개/팩' : ''}`)
-      })
-    }
+    items.push(isSolo ? `추가 물 ${input.nights * 2}L` : `추가 물 ${input.nights * people * 2}L`)
+    items.push(isSolo ? `추가 햇반 ${input.nights * 2}개` : `추가 햇반 ${input.nights * people * 2}개`)
   }
 
   return (
-    <div className="mt-4 border border-stone-100 rounded-lg overflow-hidden">
-      <div className="bg-stone-50 px-3 py-2">
-        <span className="font-semibold text-sm text-stone-700">🧺 식재료 준비 목록</span>
-      </div>
-      <ul className="px-3 py-2 space-y-1">
-        {items.map((item, i) => (
-          <li key={i} className="text-sm text-stone-700 flex gap-2">
-            <span className="text-stone-400">·</span>{item}
+    <section className="mt-4 rounded-lg border border-[#d4d9ce] bg-white/80 p-3">
+      <h3 className="text-sm font-bold text-[#506036]">식재료 메모</h3>
+      <ul className="mt-2 space-y-1">
+        {items.map((item, index) => (
+          <li key={`${item}-${index}`} className="flex gap-2 text-sm text-stone-700">
+            <span className="text-[#506036]">○</span>
+            <span>{item}</span>
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   )
 }
 
@@ -93,28 +71,31 @@ export default function RecipeResult({ input }) {
   const recipes = RECIPES[input.tent]?.[input.season] ?? []
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-4 shadow-sm">
-      <h2 className="font-bold text-base text-stone-800 mb-3">요리 추천</h2>
+    <aside>
+      <h2 className="paper-section-title">Camp Kitchen</h2>
+      <p className="paper-section-subtitle">요리 추천</p>
 
       {recipes.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-stone-200 px-3 py-4 text-sm text-stone-400">
-          해당 조건용 요리 추천을 준비 중입니다.
+        <p className="mt-3 rounded border border-dashed border-[#cfd5c7] bg-white/70 px-3 py-4 text-sm text-stone-500">
+          해당 조건의 요리 추천을 준비 중입니다.
         </p>
       ) : (
-        <div className="space-y-2">
-          {recipes.map((recipe, i) => (
-            <div key={i} className="border border-stone-100 rounded-lg px-3 py-2.5">
+        <div className="mt-3 space-y-2">
+          {recipes.map((recipe, index) => (
+            <article key={recipe.name} className="rounded-lg border border-[#d4d9ce] bg-white px-3 py-2.5">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-stone-400 w-4">{i + 1}</span>
-                <span className="font-semibold text-sm text-stone-800">{recipe.name}</span>
+                <span className="flex h-5 w-5 items-center justify-center rounded border border-[#506036] text-xs font-bold text-[#506036]">
+                  {index + 1}
+                </span>
+                <h3 className="text-sm font-bold text-[#262820]">{recipe.name}</h3>
               </div>
-              <p className="text-xs text-stone-500 mt-1 ml-6 leading-relaxed">{recipe.desc}</p>
-            </div>
+              <p className="mt-1 text-xs leading-relaxed text-stone-500">{recipe.desc}</p>
+            </article>
           ))}
         </div>
       )}
 
       <FoodPresetSection input={input} />
-    </div>
+    </aside>
   )
 }
