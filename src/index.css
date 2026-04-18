@@ -200,6 +200,7 @@ button {
 
 .metric-divider {
   height: 30px;
+  background: transparent;
 }
 
 .progress-panel {
