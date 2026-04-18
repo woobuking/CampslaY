@@ -46,7 +46,7 @@ const CATEGORY_META = {
   cooking: { label: 'Cooking', icon: '🍳' },
   fire: { label: 'Fire', icon: '🔥' },
   heating: { label: 'Heating', icon: '♨️' },
-  electronics: { label: 'Electronics', icon: '🔌' },
+  electronics: { label: 'Electronics', icon: '⚡' },
   electrical: { label: 'Electrical', icon: '⚡' },
   personal: { label: 'Personal', icon: '🎒' },
   hygiene: { label: 'Hygiene', icon: '🧼' },
