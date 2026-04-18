@@ -42,7 +42,7 @@ const CATEGORY_META = {
   tent: { label: 'Tent', icon: '🏕️' },
   lighting: { label: 'Lighting', icon: '💡' },
   bedding: { label: 'Bedding', icon: '🛏️' },
-  furniture: { label: 'Furniture', icon: '🚪' },
+  furniture: { label: 'Furniture', icon: '🪜' },
   cooking: { label: 'Cooking', icon: '🍳' },
   fire: { label: 'Fire', icon: '🔥' },
   heating: { label: 'Heating', icon: '♨️' },
@@ -433,10 +433,6 @@ function ChecklistRow({
         <h3>{item.name}</h3>
         <p>{item.notes || item.id}</p>
       </div>
-
-      <div className="row-separator" />
-      <p className="row-type">{meta.label}</p>
-      <div className="row-separator" />
 
       <button
         type="button"
