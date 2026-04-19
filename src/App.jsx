@@ -37,6 +37,9 @@ const BOX_GROUP_PRIORITY = {
   BOX003: 1,
 }
 
+const SWIPE_REMOVE_THRESHOLD = 72
+const SWIPE_MAX_OFFSET = 104
+
 const CATEGORY_META = {
   shelter: { label: 'Tent', icon: '🏕️' },
   tent: { label: 'Tent', icon: '🏕️' },
@@ -416,33 +419,100 @@ function ChecklistRow({
   onToggleSelected,
   onTogglePacked,
 }) {
+  const [swipeX, setSwipeX] = useState(0)
+  const [isSwiping, setIsSwiping] = useState(false)
+  const swipeRef = useRef(null)
   const meta = CATEGORY_META[item.category] ?? { label: item.category || 'Item', icon: '📦' }
 
+  const resetSwipe = () => {
+    swipeRef.current = null
+    setIsSwiping(false)
+    setSwipeX(0)
+  }
+
+  const handlePointerDown = event => {
+    if (!selected || event.button !== 0) return
+    if (event.target instanceof Element && event.target.closest('button')) return
+
+    swipeRef.current = {
+      id: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      offset: 0,
+      active: false,
+    }
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
+
+  const handlePointerMove = event => {
+    const swipe = swipeRef.current
+    if (!swipe || swipe.id !== event.pointerId) return
+
+    const dx = event.clientX - swipe.startX
+    const dy = event.clientY - swipe.startY
+
+    if (!swipe.active) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return
+      if (Math.abs(dy) > Math.abs(dx)) {
+        event.currentTarget.releasePointerCapture?.(event.pointerId)
+        resetSwipe()
+        return
+      }
+      swipe.active = true
+      setIsSwiping(true)
+    }
+
+    event.preventDefault()
+    const nextOffset = Math.max(-SWIPE_MAX_OFFSET, Math.min(0, dx))
+    swipe.offset = nextOffset
+    setSwipeX(nextOffset)
+  }
+
+  const handlePointerEnd = event => {
+    const swipe = swipeRef.current
+    if (!swipe || swipe.id !== event.pointerId) return
+
+    event.currentTarget.releasePointerCapture?.(event.pointerId)
+    const shouldRemove = swipe.offset <= -SWIPE_REMOVE_THRESHOLD
+    resetSwipe()
+    if (shouldRemove) onToggleSelected(item.id)
+  }
+
   return (
-    <article className={`check-row ${packed ? 'is-packed' : ''}`}>
-      <button
-        type="button"
-        className={`check-row-icon ${selected ? 'is-selected' : ''}`}
-        onClick={() => selected ? onTogglePacked(item.id) : onToggleSelected(item.id)}
-        aria-label={selected ? 'Toggle packed' : 'Add item'}
+    <div className={`check-row-swipe ${selected ? 'can-remove' : ''}`}>
+      {selected && <span className="swipe-remove-label">Remove</span>}
+      <article
+        className={`check-row ${packed ? 'is-packed' : ''} ${isSwiping ? 'is-swiping' : ''}`}
+        style={{ transform: selected ? `translateX(${swipeX}px)` : undefined }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerEnd}
+        onPointerCancel={resetSwipe}
       >
-        <EmojiIcon icon={meta.icon} />
-      </button>
+        <button
+          type="button"
+          className={`check-row-icon ${selected ? 'is-selected' : ''}`}
+          onClick={() => selected ? onTogglePacked(item.id) : onToggleSelected(item.id)}
+          aria-label={selected ? 'Toggle packed' : 'Add item'}
+        >
+          <EmojiIcon icon={meta.icon} />
+        </button>
 
-      <div className="check-row-main">
-        <h3>{item.name}</h3>
-        <p>{item.notes || item.id}</p>
-      </div>
+        <div className="check-row-main">
+          <h3>{item.name}</h3>
+          <p>{item.notes || item.id}</p>
+        </div>
 
-      <button
-        type="button"
-        className={`row-action ${packed ? 'is-packed' : selected ? 'is-selected' : ''}`}
-        onClick={() => selected ? onTogglePacked(item.id) : onToggleSelected(item.id)}
-      >
-        {packed ? 'Done' : selected ? 'Pack' : isDefault ? 'Add' : 'Pick'}
-      </button>
+        <button
+          type="button"
+          className={`row-action ${packed ? 'is-packed' : selected ? 'is-selected' : ''}`}
+          onClick={() => selected ? onTogglePacked(item.id) : onToggleSelected(item.id)}
+        >
+          {packed ? 'Done' : selected ? 'Pack' : isDefault ? 'Add' : 'Pick'}
+        </button>
 
-    </article>
+      </article>
+    </div>
   )
 }
 

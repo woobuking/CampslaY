@@ -785,12 +785,43 @@ button {
   font-weight: 800;
 }
 
+.check-row-swipe {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  touch-action: pan-y;
+}
+
+.swipe-remove-label {
+  position: absolute;
+  inset: 0 0 0 auto;
+  z-index: 0;
+  display: flex;
+  width: 104px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #f1c4bc;
+  color: #6e2a21;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 900;
+}
+
 .check-row {
+  position: relative;
+  z-index: 1;
   min-height: 58px;
   display: grid;
   grid-template-columns: 57px minmax(0, 1fr) max-content;
   align-items: center;
   gap: 10px;
+  transition: transform 160ms ease;
+  will-change: transform;
+}
+
+.check-row.is-swiping {
+  transition: none;
 }
 
 .check-row-icon {
