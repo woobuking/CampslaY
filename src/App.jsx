@@ -479,7 +479,7 @@ function ChecklistRow({
   }
 
   return (
-    <div className={`check-row-swipe ${selected ? 'can-remove' : ''}`}>
+    <div className={`check-row-swipe ${selected ? 'can-remove' : ''} ${swipeX < -4 ? 'is-revealing-remove' : ''}`}>
       {selected && <span className="swipe-remove-label">Remove</span>}
       <article
         className={`check-row ${packed ? 'is-packed' : ''} ${isSwiping ? 'is-swiping' : ''}`}
@@ -677,6 +677,10 @@ export default function App() {
     })
   }
 
+  const clearPackedItems = () => {
+    setPackedIds(new Set())
+  }
+
   const handleAssignContainer = async (itemId, containerId) => {
     if (!itemIdSet.has(itemId) || itemId === containerId) return
     const storagePrimary = containerId || ''
@@ -778,6 +782,14 @@ export default function App() {
               <span>{packedPercent}%</span>
               <strong>{activePackedIds.size}/{activeItems.length}</strong>
             </div>
+            <button
+              type="button"
+              className="clear-packed-button"
+              onClick={clearPackedItems}
+              disabled={activePackedIds.size === 0}
+            >
+              Clear
+            </button>
           </section>
         </section>
 

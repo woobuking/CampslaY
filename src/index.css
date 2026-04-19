@@ -203,6 +203,7 @@ button {
 }
 
 .progress-panel {
+  position: relative;
   padding: 3px 54px 0;
 }
 
@@ -247,6 +248,26 @@ button {
   font-family: var(--font-display);
   text-align: right;
   font-size: 11px;
+}
+
+.clear-packed-button {
+  position: absolute;
+  top: 1px;
+  right: 0;
+  width: 48px;
+  height: 24px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #3d5850;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.clear-packed-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
 }
 
 .content-panel {
@@ -803,9 +824,17 @@ button {
   border-radius: 8px;
   background: #f1c4bc;
   color: #6e2a21;
+  opacity: 0;
   font-family: var(--font-display);
   font-size: 12px;
   font-weight: 900;
+  transform: translateX(8px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.check-row-swipe.is-revealing-remove .swipe-remove-label {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .check-row {
